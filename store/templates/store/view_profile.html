@@ -1,0 +1,23 @@
+<!-- store/templates/store/view_profile.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Profile</title>
+</head>
+<body>
+    <h1>User Profile</h1>
+    {% if profile %}
+        <p>Username: {{ profile.user.username }}</p>
+        <p>Email: {{ profile.user.email }}</p>
+        <p>Phone Number: {{ profile.user.phone_number }}</p>
+        {% if profile.profile_image %}
+            <p><img src="{{ profile.profile_image.url }}" alt="Profile Image" width="200" height="200"></p>
+        {% else %}
+            <p>No profile image.</p>
+        {% endif %}
+    {% else %}
+        <p>No profile information available.</p>
+    {% endif %}
+</body>
+</html>

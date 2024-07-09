@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+        Express Yourself
+        {% endblock %}
+    </title>
+</head>
+<body>
+    <header>
+        <nav>
+            Navigation items
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        <!-- Default content -->
+        {% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2024 My Site</p>
+</footer>
+</body>
+</html>
