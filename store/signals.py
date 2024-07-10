@@ -8,8 +8,7 @@ from .models import Product, Category
 @receiver(post_save, sender=CustomUser)
 def grant_staff_permissions(sender, instance, created, **kwargs):
     if instance.is_staff:
-        # Grant 'Can add product' permission
         content_type = ContentType.objects.get_for_model(Product)
-        permission = Permission.objects.filter(content_type=content_type)
-        for p in permission:
-            instance.user_permissions.add(p)
+        permissions = Permission.objects.filter(content_type=content_type)
+        for permission in permissions:
+            instance.user_permissions.add(permission)

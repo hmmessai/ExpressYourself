@@ -25,14 +25,14 @@ class CustomUser(AbstractUser):
         return self.username
 
 class CustomerProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='customer_profile')
     picture = models.ImageField(upload_to='profile_images/', blank=True, null=True)
 
     def __str__(self):
         return self.user.username
     
 class SellerProfile(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='seller_profile')
     picture = models.ImageField(upload_to='profile_images/', blank=True, null=True)
 
     def __str__(self):

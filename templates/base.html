@@ -5,20 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
         {% block title %}
-        Express Yourself
+        Home
         {% endblock %}
     </title>
 </head>
 <body>
     <header>
         <nav>
-            Navigation items
+            <h1>Express Yourself</h1>
+            {% if user.is_authenticated %}
+            <form method="POST" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button>Logout</button>
+            </form>
+            <a href="{% url 'view_profile' %}">View Profile</a>
+            {% else %}
+            <a href="{% url 'login' %}" class="button">Login</a><br>
+            <a href="{% url 'signup' %}" class="button">Signup</a>
+            {% endif %}
         </nav>
     </header>
     <main>
         {% block content %}
-        <!-- Default content -->
+        
+            
         {% endblock %}
+        <br>
     </main>
     <footer>
         <p>&copy; 2024 My Site</p>

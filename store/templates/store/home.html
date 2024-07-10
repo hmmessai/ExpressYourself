@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}
+Express Yourself
+{% endblock %}
+{% block content %}
+
+    <h1>Products available</h1><hr>
+    {% for product in products %}
+        <h3>{{product.name}}</h3>
+        <p>{{product.category.name}}</p>
+        <button>Order</button>
+    {% endfor %}
+
+    <h1>My Orders</h1><hr>
+    {% for order in orders %}
+        <h3>{{order.product.name}} {{order.color}} {{order.size}}</h3>
+    {% endfor %}
+{% endblock %}
