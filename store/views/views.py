@@ -2,14 +2,19 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core.serializers import serialize
+from django.forms import model_to_dict
 from django.http import HttpResponse
+import json
 from ..models.users import CustomerProfile, SellerProfile, CustomUser
-from ..models.product import Product
-from ..models.order import Order
+from ..models.product import Product, Category
+from ..models.order import Order, Cart
 from store.forms import SignUpForm
 
 
 def index(request):
+    if request.user.is_authenticated:
+        return redirect('home')
     return render(request, 'base.html')
 
 
@@ -43,6 +48,7 @@ def signup_view(request):
         email = request.POST['email']
         password1 = request.POST['password1']
         password2 = request.POST['password2']
+        phone_number = request.POST['phone_number']
         role = request.POST['role']
 
         if password1 == password2:
@@ -52,7 +58,8 @@ def signup_view(request):
                 return render(request, 'store/signup.html', {'error': 'Email already exists'})
 
             try:
-                user = CustomUser.objects.create_user(username=username, email=email, password=password1)
+                user = CustomUser.objects.create_user(username=username, email=email, password=password1, phone_number=phone_number)
+                cart = Cart.objects.create(user=user)
                 
                 if role == 'Buyer':
                     user_profile = CustomerProfile.objects.create(user=user)
@@ -91,6 +98,23 @@ def logout_view(request):
 @login_required
 def home(request):
     user = request.user
+    categories = Category.objects.all()
+    # for category in categories:
+    #     cat = model_to_dict(category)
+    #     products = []
+    #     for product in category.products.all():
+    #         objs = {}
+    #         for k, v in model_to_dict(product).items():
+    #             objs[k] = str(v)
+    #         products.append(objs)
+    #     cat['products'] = products
+    #     categories_json = cat
+    categories_json = {}
     products = Product.objects.all()
     orders = Order.objects.filter(user=request.user)
-    return render(request, 'store/home.html', {'products': products, 'orders': orders})
+    orders_not_in_cart = []
+    for order in orders:
+        if order.cart:
+            continue
+        orders_not_in_cart.append(order)
+    return render(request, 'store/home.html', {'products': products, 'orders': orders_not_in_cart, 'categories': categories, 'categories_json': json.dumps(categories_json)})

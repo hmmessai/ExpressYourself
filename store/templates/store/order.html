@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}
+Order
+{% endblock %}
+
+{% block content %}
+<h1>{{product.name}}</h1>
+<p>{{product.category.name}}</p>
+<form method="POST" action="{% url 'order' product.id user.id %}">
+    {% csrf_token %}
+    <select name="color" >
+        {% for color in product.available_colors.all %}
+            <option value="{{color}}">{{ color }}</option>
+        {% endfor %}
+    </select>
+    <br>
+    <select name="size" id="">
+        {% for size in product.size.all %}
+            <option value="{{ size }}">{{size}}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Order</button>
+</form>
+{% endblock %}
+

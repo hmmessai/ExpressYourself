@@ -18,7 +18,16 @@
                 {% csrf_token %}
                 <button>Logout</button>
             </form>
-            <a href="{% url 'view_profile' %}">View Profile</a>
+            {% url 'view_profile' as view_profile %}
+            {% if request.path == view_profile %}
+                <a href="{% url 'home' %}">Home</a>
+            {% elif request.path == home %}
+                <a href="{% url 'view_profile' %}">View Profile</a>
+            {% else %}
+                <a href="{% url 'home' %}">Home</a><br>
+                <a href="{% url 'view_profile' %}">View Profile</a>
+            {% endif %}
+                <br><a href="{% url 'view_cart' %}">View Cart</a>
             {% else %}
             <a href="{% url 'login' %}" class="button">Login</a><br>
             <a href="{% url 'signup' %}" class="button">Signup</a>
@@ -26,6 +35,13 @@
         </nav>
     </header>
     <main>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         {% block content %}
         
             
@@ -35,5 +51,7 @@
     <footer>
         <p>&copy; 2024 My Site</p>
 </footer>
+{% block scripts %}
+{% endblock %}
 </body>
 </html>

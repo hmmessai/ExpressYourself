@@ -4,15 +4,55 @@ Express Yourself
 {% endblock %}
 {% block content %}
 
+    <h1>Categorys</h1>
+    <ul id="categories">
+        {% for category in categories %}
+            <li>
+                <a href="">{{category.name}}</a>
+            </li>
+        {% endfor %}
+    </ul>
+
     <h1>Products available</h1><hr>
-    {% for product in products %}
-        <h3>{{product.name}}</h3>
-        <p>{{product.category.name}}</p>
-        <button>Order</button>
-    {% endfor %}
+    <div id="products">
+        {% for product in products %}
+            <h3>{{product.name}}</h3>
+            <p>{{product.category.name}}</p>
+            <a href="{% url 'order' product.id user.id %}">Order</a>
+            <span style="padding: 5px 10px 5px;"></span>
+            <form method="post" action="{% url 'add_to_cart' product.id %}">
+                {% csrf_token %}
+                <button type="submit">Add to Cart</button>
+            </form>
+        {% endfor %}
+    </div>
 
     <h1>My Orders</h1><hr>
     {% for order in orders %}
         <h3>{{order.product.name}} {{order.color}} {{order.size}}</h3>
     {% endfor %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const categories = document.querySelectorAll('#categories a');
+        categories.forEach(function(category) {
+            category.addEventListener('click', function(){
+                event.preventDefault();
+                const products = document.getElementById('products');
+                products.innerHTML = "";
+                products.innerHTML = this.innerHTML;
+                const categos = JSON.parse('{{ categories_json }}');
+
+                categos.products.forEach(function(product) {
+                    const h3 = document.createElement('h3');
+                    h3.textContent = product.name;
+                    productsContainer.appendChild(h3);
+                })
+            })
+        })
+    });
+
+</script>
 {% endblock %}

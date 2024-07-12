@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Orders in Cart</h1>
+<form method="post" action="{% url 'checkout' %}">
+    {% csrf_token %}
+    <select name="orders" id="" multiple>
+        {% for product in cart.orders.all %}
+            <option value="{{product.id}}">{{product}}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Checkout</button>
+</form>
+
+{% endblock %}

@@ -27,7 +27,7 @@ class Product(models.Model):
     name = models.CharField(max_length=50, null=False)
     description = models.TextField(blank=True, null=True)
     price = models.DecimalField(max_digits=10, default=0.00, decimal_places=2, null=False)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=False)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=False, related_name='products')
     available_colors = models.ManyToManyField(Color, related_name='using_products')
     rating = models.IntegerField(choices=RATINGS, null=True)
     size = models.ManyToManyField(Size, blank=True)
