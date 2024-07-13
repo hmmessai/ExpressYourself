@@ -31,6 +31,7 @@ class Product(models.Model):
     available_colors = models.ManyToManyField(Color, related_name='using_products')
     rating = models.IntegerField(choices=RATINGS, null=True)
     size = models.ManyToManyField(Size, blank=True)
+    picture = models.ImageField(upload_to='product_images/', blank=True, null=True)
     posted_by = models.ForeignKey(
         CustomUser, 
         limit_choices_to={'is_staff': True},

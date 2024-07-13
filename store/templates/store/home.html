@@ -4,33 +4,62 @@ Express Yourself
 {% endblock %}
 {% block content %}
 
-    <h1>Categorys</h1>
-    <ul id="categories">
-        {% for category in categories %}
-            <li>
-                <a href="">{{category.name}}</a>
-            </li>
-        {% endfor %}
-    </ul>
+<div class="container-fluid">
+    <div class="row p-5">
+        <div class="col-md-2">
+            <h1>Categorys</h1>
+            <ul id="categories">
+                <li>
+                    <a href="{% url 'home' %}">All</a>
+                </li>
+                {% for category in categories %}
+                    <li>
+                        <a href="">{{category.name}}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-md-8">
+            <h1>Products available</h1><hr>
+                <div class="row row-cols-md-3 g-2">
+                    
+                        {% for product in products %}
+                        <div class="col">
+                        <div class="card" style="width: 18rem;">
+                            <img src="{{ product.picture.url }}" class="card-img-top" alt="{{ product.name }}">
+                            <hr>
+                            <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description }}</p>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <a class="btn btn-dark" href="{% url 'order' product.id user.id %}">Order</a>
+                                </div>
+                                <span class="col-md-2"></span>
+                                <div class="col-md-6">
+                                    <form method="post" action="{% url 'add_to_cart' product.id %}">
+                                        {% csrf_token %}
+                                        <button class="btn btn-primary" type="submit">Add to Cart</button>
+                                    </form>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                        {% endfor %}
+                    
+                </div>
+        </div>
 
-    <h1>Products available</h1><hr>
-    <div id="products">
-        {% for product in products %}
-            <h3>{{product.name}}</h3>
-            <p>{{product.category.name}}</p>
-            <a href="{% url 'order' product.id user.id %}">Order</a>
-            <span style="padding: 5px 10px 5px;"></span>
-            <form method="post" action="{% url 'add_to_cart' product.id %}">
-                {% csrf_token %}
-                <button type="submit">Add to Cart</button>
-            </form>
-        {% endfor %}
+        <div class="col-md-2">
+            <h1>My Orders</h1><hr>
+            {% for order in orders %}
+                <h3>{{order.product.name}} {{order.color}} {{order.size}}</h3>
+            {% endfor %}
+        </div>
     </div>
-
-    <h1>My Orders</h1><hr>
-    {% for order in orders %}
-        <h3>{{order.product.name}} {{order.color}} {{order.size}}</h3>
-    {% endfor %}
+    
+</div>
 {% endblock %}
 
 {% block scripts %}

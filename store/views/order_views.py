@@ -51,10 +51,15 @@ def view_cart(request):
 def checkout(request):
     selected_orders = request.POST.getlist('orders')
     orders = []
+    user = request.user
 
-    for order in selected_orders:
-        orders.append(Order.objects.get(id=order))
+    print(selected_orders)
+
+    orders = Order.objects.filter(id__in=selected_orders)
 
     print(orders)
+    # Ensure all selected orders belong to the user's cart
+    user.cart.orders.remove(*orders)
+    
 
     return redirect('view_cart')

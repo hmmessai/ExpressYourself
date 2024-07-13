@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
     <title>
         {% block title %}
         Home
@@ -11,36 +14,55 @@
 </head>
 <body>
     <header>
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">Express Yourself</a>
+              
+              
+                <div class="d-flex" role="search">
+                  <!-- <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                  <button class="btn btn-outline-success" type="submit">Search</button> -->
+                  {% if user.is_authenticated %}
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button class="btn btn-dark mx-2">Logout</button>
+                    </form>
+                    {% url 'view_profile' as view_profile %}
+                    {% url 'home' as home %}
+                    {% url 'view_cart' as viewcart %}
+                    {% if request.path == view_profile %}
+                        <a class="btn btn-light mx-2" href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a>
+                    {% elif request.path == home %}
+                        <a class="btn btn-light mx-2" href="{% url 'view_profile' %}">View Profile</a>
+                    {% else %}
+                        <a class="btn btn-light mx-2" href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a>
+                        <a class="btn btn-light mx-2" href="{% url 'view_profile' %}"> <i class="bi bi-person-circle bi-4x"></i>  View Profile</a>
+                    {% endif %}
+                    {% if request.path != viewcart %}
+                        <a class="btn btn-primary mx-2" href="{% url 'view_cart' %}"><i class="bi bi-cart bi-4x"></i>  View Cart</a>
+                    {%endif%}
+                {% else %}
+                    <a class="btn btn-dark mx-2" href="{% url 'login' %}" class="button">Login</a><br>
+                    <a class="btn btn-dark mx-2" href="{% url 'signup' %}" class="button">Signup</a>
+                {% endif %}
+                </div>
+              </div>
+            </div>
+          </nav>
         <nav>
-            <h1>Express Yourself</h1>
-            {% if user.is_authenticated %}
-            <form method="POST" action="{% url 'logout' %}">
-                {% csrf_token %}
-                <button>Logout</button>
-            </form>
-            {% url 'view_profile' as view_profile %}
-            {% if request.path == view_profile %}
-                <a href="{% url 'home' %}">Home</a>
-            {% elif request.path == home %}
-                <a href="{% url 'view_profile' %}">View Profile</a>
-            {% else %}
-                <a href="{% url 'home' %}">Home</a><br>
-                <a href="{% url 'view_profile' %}">View Profile</a>
-            {% endif %}
-                <br><a href="{% url 'view_cart' %}">View Cart</a>
-            {% else %}
-            <a href="{% url 'login' %}" class="button">Login</a><br>
-            <a href="{% url 'signup' %}" class="button">Signup</a>
-            {% endif %}
+            <h1></h1>
+            
         </nav>
     </header>
     <main>
         {% if messages %}
-            <ul class="messages">
+        <div class="col-md-6 mx-auto">
+            <ul class="alert alert-success messages">
                 {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {{ message }}
                 {% endfor %}
             </ul>
+        </div>
         {% endif %}
         {% block content %}
         
@@ -52,6 +74,8 @@
         <p>&copy; 2024 My Site</p>
 </footer>
 {% block scripts %}
+    <script src="{% static 'js/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
 {% endblock %}
 </body>
 </html>

@@ -18,6 +18,7 @@ class Order(models.Model):
     color = models.ForeignKey(Color, null=True, on_delete=models.SET_NULL)
     size = models.ForeignKey(Size, null=True, on_delete=models.SET_NULL)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    done = models.BooleanField(null=False, default=False)
     cart = models.ForeignKey(Cart, limit_choices_to={'user': user}, null=True, blank=True, related_name='orders', on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
