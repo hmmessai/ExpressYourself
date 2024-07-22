@@ -8,8 +8,8 @@
         <p>Username: {{ profile.user.username }}</p>
         <p>Email: {{ profile.user.email }}</p>
         <p>Phone Number: {{ profile.user.phone_number }}</p>
-        {% if profile.profile_image %}
-            <p><img src="{{ profile.profile_image.url }}" alt="Profile Image" width="200" height="200"></p>
+        {% if profile.picture %}
+            <p><img src="{{ profile.picture.url }}" alt="Profile Image" width="200" height="200"></p>
         {% else %}
             <p>No profile image.</p>
         {% endif %}

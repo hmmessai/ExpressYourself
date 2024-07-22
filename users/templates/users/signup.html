@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block title %}
+    Signup
+{% endblock %}
+{% block content %}
+    
+    <div class="col-lg-6 mx-auto p-5">
+        
+        <form class="form-control p-5" method="post">
+            <div class="col-md-10 mx-auto">
+                <h2 class="mb-5 text-center">Sign Up</h2>
+                {% if error %}
+                    <p class="alert alert-danger text-center">{{ error }}</p>
+                {% endif %}
+                {% csrf_token %}
+            
+                <div class="form-floating">
+                    <input type="text" id="username" name="username" class="form-control mb-4" required>
+                    <label for="username" class="form-group mb-4">Username:</label>
+                </div>
+                <div class="form-floating">
+                    <input type="email" id="email" name="email" class="form-control mb-4" required>
+                    <label for="email" class="form-group mb-4">Email:</label>
+                </div>
+                <div class="form-floating">
+                    <input type="number" id="phone_number" name="phone_number" class="form-control mb-4" required>
+                    <label for="phone_number" class="form-group mb-4">Phone Number:</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" id="password1" name="password1" class="form-control mb-4"required>
+                    <label for="password1" class="form-group mb-4">Password:</label>
+                </div>
+                    
+                <div class="form-floating">
+                    <input type="password" id="password2" name="password2" class="form-control mb-4" required>
+                    <label for="password2" class="form-group mb-4">Confirm Password:</label>
+                </div>
+    
+                <div class="row">
+                    <div class="col-md-12">
+                        <label>Select role</label>
+                    </div>
+                    <div class="col-md-12 form-group mb-4">
+                        <select name="role" class="form-control" id="">
+                            <option value="Buyer">Buyer</option>
+                            <option value="Seller">Seller</option>
+                        </select>
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="text-center mb-4">
+                <a href="{% url 'login' %}">Already have an account? Log in.</a>
+            </div>
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <button class="btn btn-dark px-5" type="submit">Sign Up</button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

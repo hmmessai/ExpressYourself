@@ -2,8 +2,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.models import Permission
-from .models import CustomUser
-from .models import Product, Category
+from users.models import CustomUser
+from .models.product import Product, Category
 
 @receiver(post_save, sender=CustomUser)
 def grant_staff_permissions(sender, instance, created, **kwargs):

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models.users import CustomUser
+from users.models import CustomUser, CustomerProfile, SellerProfile
 from .models.catagory import Category
 from .models.product import Product, Color, Size
 from django.contrib.auth.admin import UserAdmin
@@ -56,6 +56,8 @@ class OrderAdmin(admin.ModelAdmin):
     order_display.short_description = 'Order'
 
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(CustomerProfile)
+admin.site.register(SellerProfile)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Cart)

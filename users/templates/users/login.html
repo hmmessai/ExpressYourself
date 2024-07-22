@@ -1,14 +1,14 @@
 {% extends 'base.html'%}
 {% block content%}
-    
-    <form method="post" action="/login/">
+    <div class="col-lg-6 mx-auto p-5">
+      <form class="form-control p-5" method="post" action="{% url 'login' %}">
         {% csrf_token %}
-        {% if error %}
-            <p style="color:red;">{{ error }}</p>
-        {% endif %}
         <div class="row">
-          <div class="col-md-6 mx-auto">
-            <h2>Login</h2>
+          <div class="col-md-10 mx-auto">
+            <h2 class="text-center p-2 mb-3">Login</h2>
+            {% if error %}
+              <p class="alert alert-danger text-center">{{ error }}</p>
+            {% endif %}
             <div class="form-floating mb-3">
               <input type="text" class="form-control mb-3" id="floatingInput" placeholder="name@example.com" name="username">
               <label for="floatingInput">Email address</label>
@@ -17,9 +17,15 @@
               <input type="password" class="form-control mb-3" id="floatingPassword" placeholder="Password" name="password">
               <label for="floatingPassword">Password</label>
             </div>
-            <button type='submit' class="btn btn-primary">Submit</button>
+            <div class="text-center mb-4">
+              <a href="{% url 'signup' %}">Don't have an account? Sign up.</a>
+            </div>
+            <div class="form-floating text-center">
+              <button type='submit' class="btn btn-dark px-5">Log in</button>
+            </div>
           </div>
         </div>
     </form>
+    </div>
     
 {% endblock %}

@@ -1,17 +1,17 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib import messages
 import json
-from ..models.users import CustomerProfile, SellerProfile, CustomUser
-from ..models.product import Product, Color, Size
-from ..models.order import Order, Cart
+from users.models import CustomerProfile, SellerProfile, CustomUser
+from store.models.product import Product, Color, Size
+from store.models.order import Order, Cart
 
 
-def order(request, product_id, user_id):
+def order(request, product_id):
     product = Product.objects.get(id=product_id)
-    user = CustomUser.objects.get(id=user_id)
+    user = request.user
     if request.method == 'POST':
         color_name = request.POST['color'] 
         size_name = request.POST['size']
@@ -63,3 +63,12 @@ def checkout(request):
     
 
     return redirect('view_cart')
+
+def get_product_data(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    product_data = {
+        'name': product.name,
+        'available_colors': [color.name for color in product.available_colors.all()],
+        'sizes': [size.name for size in product.size.all()],
+    }
+    return JsonResponse(product_data)

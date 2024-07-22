@@ -1,6 +1,6 @@
 from django.db import models
 from .catagory import Category
-from .users import CustomUser
+from users.models import CustomUser
 
 RATINGS = [
     (1, '1'),

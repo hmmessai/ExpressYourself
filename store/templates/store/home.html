@@ -5,83 +5,228 @@ Express Yourself
 {% block content %}
 
 <div class="container-fluid">
-    <div class="row p-5">
-        <div class="col-md-2">
-            <h1>Categorys</h1>
-            <ul id="categories">
-                <li>
-                    <a href="{% url 'home' %}">All</a>
-                </li>
-                {% for category in categories %}
-                    <li>
-                        <a href="">{{category.name}}</a>
+    <div class="row p-2">
+        <div class="col-12 col-md-3 sticky-top" style="height: 200px;">
+            <div>
+              <!-- Categories -->
+              <div class="mb-5">
+                <h1>Categories</h1>
+                <ul class="list-group flex-md-column flex-row" id="categories">
+                  {% for category in categories %}
+                    <li class="list-group-item col-5 col-md-9">
+                      <a class="btn btn-light" data-category_id="{{category.id}}" href="">{{category.name}}</a>
                     </li>
-                {% endfor %}
-            </ul>
+                  {% endfor %}
+                </ul>
+              </div>
+              
+              <!-- My Orders -->
+              <div class="d-none d-lg-block overflow-auto h-md-20">
+                <h1>My Orders</h1><hr>
+                <ul class="list-group">
+                  {% for order in orders %}
+                    <li class="list-group-item">{{order.product.name}} {{order.color}} {{order.size}}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
         </div>
-        <div class="col-md-8">
+        <div class="col-md-1">
+            <span></span>
+        </div>
+        <div class="col-lg-8">
             <h1>Products available</h1><hr>
-                <div class="row row-cols-md-3 g-2">
-                    
-                        {% for product in products %}
-                        <div class="col">
-                        <div class="card" style="width: 18rem;">
-                            <img src="{{ product.picture.url }}" class="card-img-top" alt="{{ product.name }}">
-                            <hr>
-                            <div class="card-body">
-                            <h5 class="card-title">{{ product.name }}</h5>
-                            <p class="card-text">{{ product.description }}</p>
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <a class="btn btn-dark" href="{% url 'order' product.id user.id %}">Order</a>
-                                </div>
-                                <span class="col-md-2"></span>
-                                <div class="col-md-6">
-                                    <form method="post" action="{% url 'add_to_cart' product.id %}">
-                                        {% csrf_token %}
-                                        <button class="btn btn-primary" type="submit">Add to Cart</button>
-                                    </form>
+                <div class="row row-cols-1 row-cols-lg-3 row-cols-sm-2 g-2" id="products">
+                    {% for product in products %}
+                    <div class="col">
+                            <div class="card">
+                                <img src="{{ product.picture.url }}" class="card-img-top" style="width: 100%; height: auto;" alt="{{ product.name }}">
+                                <hr class="card-hr">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ product.name }}</h5>
+                                    <p class="card-text">{{ product.description }}</p>
+                                    <div class="row">
+                                        <div class="col-md-3 col-sm-5">
+                                            <button type="button" id="orderbtn" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#orderModal" data-user_id="{{user.id}}" data-product_id="{{ product.id }}" onclick="event.stopPropagation();">Order</button>
+                                        </div>
+                                        <span class="col-md-4 col-sm-2"></span>
+                                        <div class="col-md-5 col-sm-5">
+                                            <form method="post" action="{% url 'add_to_cart' product.id %}">
+                                                {% csrf_token %}
+                                                <button class="btn btn-dark" type="submit"><i class="bi bi-cart bi-5x"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            </div>
-                        </div>
                     </div>
-                        {% endfor %}
-                    
+                    {% endfor %}
                 </div>
         </div>
+    </div>
 
-        <div class="col-md-2">
-            <h1>My Orders</h1><hr>
-            {% for order in orders %}
-                <h3>{{order.product.name}} {{order.color}} {{order.size}}</h3>
-            {% endfor %}
+        
+    
+</div>
+
+<!-- Order Popup -->
+<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-light">
+                <div class="col-md-12 d-flex justify-content-between align-items-center">
+                    <h5 class="modal-title" id="orderModalLabel">Order Product</h5>
+                    <button type="button" class="close btn btn-danger" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="modalForm" method="POST" action="">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label for="productName" >Product Name</label>
+                        <input type="text" class="form-control" id="productName" name="productName" readonly>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="productName" >Color </label>
+                        <select class="form-control" name="color" id="color"></select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="productName" >Size </label>
+                        <select class="form-control" name="size" id="size"></select>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-success px-4" type="submit">Order</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-    
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const categories = document.querySelectorAll('#categories a');
-        categories.forEach(function(category) {
-            category.addEventListener('click', function(){
-                event.preventDefault();
-                const products = document.getElementById('products');
-                products.innerHTML = "";
-                products.innerHTML = this.innerHTML;
-                const categos = JSON.parse('{{ categories_json }}');
+$(document).ready(function() {
 
-                categos.products.forEach(function(product) {
-                    const h3 = document.createElement('h3');
-                    h3.textContent = product.name;
-                    productsContainer.appendChild(h3);
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+        const products = $('#products');
+        const categories = $('#categories a');
+
+        categories.each(function (index, element) {
+            $(element).click(function(event) {
+                event.preventDefault();
+                const val = $(this).data('category_id');
+
+                categories.removeClass('active');
+                $(this).addClass('active');
+
+                $.ajax({
+                    url: `${window.location.origin}/filter_by_category/${val}`,
+                    method: 'GET',
+                    success: function(response) {
+                            products.empty();
+                            response.products.forEach(function(product) {
+                                const csrf_token = getCookie('csrftoken');
+                                const product_url = "{% url 'signup' %}";
+                                console.log('Success');
+                                console.log(product.description.replace(/\n/g, '<br>'));
+                                const productHtml = `
+                                    <div class="col">
+                                            <div class="card ">
+                                                <img src="${product.picture}" class="card-img-top" style="width: 100%; height: auto;" alt="${product.name}">
+                                                <hr class="card-hr">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">${product.name}</h5>
+                                                    <p class="card-text">${product.description.replace(/\n/g, '<br>')}</p>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#orderModal" data-product_id=${product.id}>Order</button>
+                                                        </div>
+                                                        <span class="col-md-2"></span>
+                                                        <div class="col-md-6">
+                                                            <form method="post" action="/add-to-cart/${product.id}/">
+                                                                <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
+                                                                <button class="btn btn-dark" type="submit"><i class="bi bi-cart bi-4x"></i></button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>`;
+                                        
+                                products.append(productHtml);
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX Error:', status, error);
+                            products.html('An error occurred while loading products.');
+                        }
+
                 })
             })
         })
-    });
 
+        $('#orderModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var productId = button.data('product_id'); // Extract product ID from data-* attributes
+
+
+            // Make an AJAX request to fetch the product data
+            $.ajax({
+                url: '{% url "get_product_data" 0 %}'.replace('0', productId),
+                method: 'GET',
+                success: function(data) {
+                    // Populate the modal with the received data
+                    $('#orderModalLabel').text('Order ' + data.name);
+                    $('#productName').val(data.name);
+
+                    // Populate colors
+                    var colorSelect = $('#color');
+                    colorSelect.empty();
+                    $.each(data.available_colors, function(index, color) {
+                        colorSelect.append($('<option>', {
+                            value: color,
+                            text: color
+                        }));
+                    });
+
+                    // Populate sizes
+                    var sizeSelect = $('#size');
+                    sizeSelect.empty();
+                    $.each(data.sizes, function(index, size) {
+                        sizeSelect.append($('<option>', {
+                            value: size,
+                            text: size
+                        }));
+                    });
+
+                    var actionUrl = "{% url 'order' 0 %}".replace('0', productId);
+
+                    // Set the form action
+                    var modalForm = $('#modalForm');
+                    modalForm.attr('action', actionUrl);
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX request failed:', status, error);
+                }
+            });
+        });
+});
 </script>
 {% endblock %}
