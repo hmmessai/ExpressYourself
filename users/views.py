@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from users.models import CustomUser, CustomerProfile, SellerProfile
 from store.models.order import Cart
-from .forms import CustomUserForm
+from .forms import CustomUserForm, CustomLoginForm
 
 
 class ViewProfile(LoginRequiredMixin, View):
@@ -26,18 +26,20 @@ class LoginView(View):
     Login view to log into user account
     """
     def get(self, request):
-        return render(request, 'users/login.html')
+        form = CustomLoginForm()
+        return render(request, 'users/login.html', {'form': form})
         
     def post(self, request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            return render(request, 'users/login.html', {'error': "Invalid email or password"})
-        
+        form = CustomLoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.cleaned_data.get('username')
+            pas
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                return render(request, 'users/login.html', {'error': "Invalid email or password"})
+            
     
 class SignUpView(View):
     """
@@ -56,6 +58,7 @@ class SignUpView(View):
             user.save()
             login(request, user)
             return redirect('home')
+        return render(request, 'users/signup.html', {'form': form})
         # username = request.POST['username']
         # email = request.POST['email']
         # password1 = request.POST['password1']

@@ -4,6 +4,7 @@ from django.conf import settings
 
 
 class CustomUser(AbstractUser):
+    email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=13, blank=False, null=False)
 
     groups = models.ManyToManyField(

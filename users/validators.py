@@ -1,7 +1,10 @@
 import re
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError     
 
-def validate_phone_number(phone_number):
-    if not re.match(r'09[0-9]{8}', phone_number):
-        raise ValidationError('Phone number not the valid format.')
-        
+def validate_password(value):
+    if len(value) < 8:
+        raise ValidationError('Password must be at least 8 characters long.')
+    if not any(char.isdigit() for char in value):
+        raise ValidationError('Password must contain at least one numeral.')
+    if not any(char.isalpha() for char in value):
+        raise ValidationError('Password must contain at least one letter.')
