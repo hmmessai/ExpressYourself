@@ -32,13 +32,10 @@ class LoginView(View):
     def post(self, request):
         form = CustomLoginForm(data=request.POST)
         if form.is_valid():
-            user = form.cleaned_data.get('username')
-            pas
-            if user is not None:
-                login(request, user)
-                return redirect('home')
-            else:
-                return render(request, 'users/login.html', {'error': "Invalid email or password"})
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
+        return render(request, 'users/login.html', {'form': form})
             
     
 class SignUpView(View):
@@ -52,13 +49,48 @@ class SignUpView(View):
     def post(self, request):
         form = CustomUserForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            # Ensure that the password is hashed
-            user.set_password(form.cleaned_data['password'])
-            user.save()
+            cleaned_data = form.cleaned_data
+            username = cleaned_data['username']
+            email = cleaned_data['email']
+            first_name = cleaned_data['first_name']
+            last_name = cleaned_data['last_name']
+            phone_number = cleaned_data['phone_number']
+            password = cleaned_data['password']
+            role = cleaned_data['role']
+            
+
+            try:
+                user = CustomUser(
+                    username=username,
+                    email=email,
+                    first_name=first_name,
+                    last_name=last_name,
+                    phone_number=phone_number
+                )
+                user.set_password(password)
+                
+                user.save()
+
+                cart = Cart.objects.create(user=user)
+
+                if role == 'buyer':
+                    user_profile = CustomerProfile.objects.create(user=user)
+                elif role == 'seller':
+                    user_profile = SellerProfile.objects.create(user=user)
+                else:
+                    user.delete()
+                    return render(request, 'users/signup.html', {'form': form})
+            except Exception as e:
+                return render(request, 'users/signup.html', {'form': form})
             login(request, user)
+
             return redirect('home')
         return render(request, 'users/signup.html', {'form': form})
+    
+
+
+
+
         # username = request.POST['username']
         # email = request.POST['email']
         # password1 = request.POST['password1']

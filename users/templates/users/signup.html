@@ -79,6 +79,24 @@
                         {{ form.password2.errors.0 }}
                     </div>
                 {% endif %}
+
+                <div class="form-floating mb-3">
+                    {{ form.role }}
+                    <label for="{{ form.role.id_for_label }}">Select Role</label>
+                </div>
+                {% if form.role.errors %}
+                    <div class="error mb-2 text-danger mx-4">
+                        {{ form.role.errors.0 }}
+                    </div>
+                {% endif %}
+                {% if form.non_field_errors %}
+                    <div class="text-danger text-center">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
             
                 
             <!-- <div class="col-md-10 mx-auto">

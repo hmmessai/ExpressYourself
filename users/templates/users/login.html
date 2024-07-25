@@ -4,21 +4,28 @@
       <form class="form-control p-5" method="post" action="{% url 'login' %}">
         {% csrf_token %}
         <h2 class="text-center">Login</h2>
+        {% if form.non_field_errors %}
+            <div class="text-danger text-center">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
         <div class="form-floating mb-2">
-          <label for="{{ form.username.id_for_label }}">Username</label>
           {{ form.username }}
+          <label for="{{ form.username.id_for_label }}">Username</label>
           {% if form.username.errors %}
-              <div class="invalid-feedback d-block">
+              <div class="error mb-2 text-danger mx-4">
                   {{ form.username.errors.0 }}
               </div>
           {% endif %}
         </div>
 
         <div class="form-floating mb-2">
-            <label for="{{ form.password.id_for_label }}">Password</label>
             {{ form.password }}
+            <label for="{{ form.password.id_for_label }}">Password</label>
             {% if form.password.errors %}
-                <div class="invalid-feedback d-block">
+                <div class="error mb-2 text-danger mx-4">
                     {{ form.password.errors.0 }}
                 </div>
             {% endif %}

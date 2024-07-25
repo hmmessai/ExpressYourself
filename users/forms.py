@@ -1,16 +1,37 @@
 from django import forms
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.forms import AuthenticationForm
 from .validators import validate_password
 from django.core.validators import RegexValidator, EmailValidator
 
 CustomUser = get_user_model()
+ROLE_CHOICES = [
+    ('buyer', 'Buyer'),
+    ('seller', 'Seller'),
+]
 
 class CustomUserForm(forms.ModelForm):
     password2 = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Repeat Password'}),
         label='Confirm Password',
     )
+
+    role = forms.ChoiceField(
+        choices=ROLE_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Role',
+    )
+
+    email = forms.EmailField(
+        validators=[EmailValidator(message='Enter a valid email address.')],
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'user@example.com'})
+    )
+    phone_number = forms.CharField(
+        validators=[RegexValidator(r'^09\d{8}$', message='Enter a valid phone number.')],
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': '09XXXXXXXX'})
+    )
+
     class Meta:
         model = CustomUser
         fields = ['email', 'first_name', 'last_name', 'phone_number', 'username', 'password']
@@ -30,10 +51,6 @@ class CustomUserForm(forms.ModelForm):
         }
         help_texts = {
             'username': '',
-        }
-        validators = {
-            'email': [EmailValidator(message='Enter a valid email address.')],
-            'phone_number': [RegexValidator(r'^09\d{8}$', message='Enter a valid phone number.')],
         }
 
     def clean_email(self):
@@ -55,16 +72,40 @@ class CustomUserForm(forms.ModelForm):
     
 
 class CustomLoginForm(AuthenticationForm):
-    class Meta:
-        model = CustomUser
-        fields = ['username', 'password']
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Enter username'
+        }),
+        label='User Name'
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Password'
+        }),
+        label='Password'
+    )
 
-        widgets = {
-                'username': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter username'}),
-                'password': forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}),
-            }
+    def confirm_login_allowed(self, user: AbstractBaseUser) -> None:
+        return super().confirm_login_allowed(user)
 
-        labels = {
-            'username': 'User Name',
-            'password': 'Password',
-        }
+    def clean(self):
+        super().clean()
+        username = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
+
+        if username and password:
+            self.user_cache = authenticate(self.request, username=username, password=password)
+            if self.user_cache is None:
+                raise forms.ValidationError(
+                    "Incorrect username or password. Please try again.",
+                    code='invalid_login'
+                )
+            else:
+                self.confirm_login_allowed(self.user_cache)
+
+        return self.cleaned_data
+
+    def get_user(self):
+        return self.user_cache
