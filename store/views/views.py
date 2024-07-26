@@ -26,7 +26,7 @@ class HomeView(LoginRequiredMixin, View):
     def get(self, request):
         categories = Category.objects.all()
         categories_json = {}
-        products = Product.objects.all()
+        products = Product.objects.filter(status='available')
         orders = Order.objects.filter(user=request.user)
         orders_not_in_cart = []
         for order in orders:

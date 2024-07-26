@@ -32,6 +32,7 @@ class Product(models.Model):
     rating = models.IntegerField(choices=RATINGS, null=True)
     size = models.ManyToManyField(Size, blank=True)
     picture = models.ImageField(upload_to='product_images/', blank=True, null=True)
+    status = models.CharField(max_length=20, null=False, default='available')
     posted_by = models.ForeignKey(
         CustomUser, 
         limit_choices_to={'is_staff': True},

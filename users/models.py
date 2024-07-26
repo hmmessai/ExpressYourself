@@ -40,3 +40,9 @@ class SellerProfile(models.Model):
     def __str__(self):
         return self.user.username
  
+class Request(models.Model):
+    from store.models.product import Product
+    requester = models.OneToOneField(CustomerProfile, on_delete=models.CASCADE, related_name='requests')
+    provider = models.OneToOneField(SellerProfile, on_delete=models.CASCADE, null=True, related_name='requests_recieved')
+    product = models.OneToOneField(Product, on_delete=models.CASCADE, null=True, related_name='requests')
+    price = models.IntegerField(null=True)
