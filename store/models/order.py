@@ -23,13 +23,16 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         if self.product_id:
-            price = self.product.price + (Decimal(0.02) * self.product.price)
+            price = self.product.price + (0.02 * self.product.price)
             self.total_price = price
 
-        super().save(*args, **kwargs)
+        super(Order, self).save(*args, **kwargs)
+        
+        if not hasattr(self, 'payment'):
+            Payment.objects.create(order=self)
 
     def __str__(self) -> str:
-        return f"Order {self.user} - {self.product}"
+        return f"{self.user}'s order for {self.product}"
 
 
 class OrderForm(forms.ModelForm):
@@ -49,3 +52,30 @@ class OrderForm(forms.ModelForm):
         elif self.instance and self.instance.product_id:
             self.fields['color'].queryset = self.instance.product.available_colors.all()
             self.fields['size'].queryset = self.instance.product.size.all()
+
+
+class Payment(models.Model):
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment')
+    advance = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    status = models.CharField(max_length=20, null=False, default='not done')
+
+    def save(self, *args, **kwargs):
+        if self.order_id:
+            advance_payment = 0.5 * self.order.total_price
+            self.advance = advance_payment
+
+        super(Payment, self).save(*args, **kwargs)
+
+    def payAdvance(self):
+        pass
+
+    def payInFull(self):
+        pass
+
+    def payRemainder(self):
+        pass
+        
+
+    def __str__(self) -> str:
+        return f"Payment for {self.order}"
+

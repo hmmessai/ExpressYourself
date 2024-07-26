@@ -45,4 +45,9 @@ class Request(models.Model):
     requester = models.OneToOneField(CustomerProfile, on_delete=models.CASCADE, related_name='requests')
     provider = models.OneToOneField(SellerProfile, on_delete=models.CASCADE, null=True, related_name='requests_recieved')
     product = models.OneToOneField(Product, on_delete=models.CASCADE, null=True, related_name='requests')
-    price = models.IntegerField(null=True)
+    accepted = models.BooleanField(null=False, default=False)
+
+    def save(self, *args, **kwargs):
+        if self.accepted:
+            self.product.status = 'available'
+        super(Request, self).save(*args, **kwargs)
