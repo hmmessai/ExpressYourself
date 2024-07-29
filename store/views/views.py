@@ -24,7 +24,7 @@ class HomeView(LoginRequiredMixin, View):
     Home view that is displayed when the user is authenticated.
     """
     def get(self, request):
-        categories = Category.objects.all()
+        categories = Category.objects.exclude(name='Requested')
         categories_json = {}
         products = Product.objects.filter(status='available')
         orders = Order.objects.filter(user=request.user)

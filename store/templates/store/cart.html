@@ -3,15 +3,86 @@
 Cart
 {% endblock %}
 {% block content %}
-<h1>Orders in Cart</h1>
-<form method="post" action="{% url 'checkout' %}">
-    {% csrf_token %}
-    <select name="orders" id="" multiple>
-        {% for product in cart.orders.all %}
-            <option value="{{product.id}}">{{product}}</option>
-        {% endfor %}
-    </select>
-    <button type="submit">Checkout</button>
-</form>
+<div class="container" style="height: 90vh;">
+    <div class="form-control mt-5 p-5 h-auto">
+        <h1 class="text-center pt-3 pb-4">Orders in Cart</h1>
+        <form method="post" id="mainForm" action="{% url 'checkout' %}">
+            {% csrf_token %}
+            <div class="col-md-5 mx-auto">
+                <div class="accordion accordion-flush" id="accordionFlushExample">
+                    {% if not cart.orders.all %}
+                    <div class="text-center">
+                        <h3>There are no products in your cart</h3>
+                    </div>
+                    {% else %}
+                    <p class="text-center"> Choose the options to select color and size and click on the checkbox to checkout </p>
+                    {% for order in cart.orders.all %}
+                        
+                        <div class="accordion-item p-3">
+                            <div class="accordion-header">
+                                <input type="checkbox" class="form-check-input me-2 col-2 align-items-center" id="checkbox{{ forloop.counter }}" name="items" value="{{order.id}}">
+                                <label for="checkbox{{ forloop.counter }}" class="form-check-label col-10">
+                                    <button class="accordion-button collapsed col-12" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="flush-collapse{{ forloop.counter }}">
+                                        {{ order.product }}
+                                    </button>
+                                </label>
+                            </div>
+                            <div id="flush-collapse{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                    <div class="text-center">
+                                        {{ order.product.description }}
+                                    </div>
+                                    <form id="insideForm" method="post" action="">
+                                        <div class="form-group mb-3">
+                                            <label for="productName" >Product</label>
+                                            <input type="text" class="form-control" id="productName" name="productName" value="{{ order.product }}" readonly>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label for="productName" >Color </label>
+                                            <select class="form-control" name="{{order.product.id}}_color" id="color">
+                                                {% for color in order.product.available_colors.all %}
+                                                    <option value="{{color.id}}">{{color.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group mb-3">
+                                            <label for="productName" >Size </label>
+                                            <select class="form-control" name="{{order.product.id}}_size" id="size">
+                                                {% for size in order.product.size.all %}
+                                                    <option value="{{size.id}}">{{size.name}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </form>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+
+                    <div class="col-5 mx-auto p-5">
+                        <button class="btn btn-dark mx-auto" type="submit">Checkout</button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+        </form>
+    </div>
+</div>
 
 {% endblock %}
+
+{% block scripts %}
+
+<script>
+
+    $('document').ready(function () {
+        $('#mainForm').on('submit', function(event) {
+
+        })
+    })
+
+</script>
+
+{% endblock%}

@@ -49,7 +49,7 @@ def view_cart(request):
     return render(request, 'store/cart.html', {'cart': cart})
 
 def checkout(request):
-    selected_orders = request.POST.getlist('orders')
+    selected_orders = request.POST.getlist('items')
     orders = []
     user = request.user
 
@@ -58,7 +58,7 @@ def checkout(request):
     orders = Order.objects.filter(id__in=selected_orders)
 
     print(orders)
-    # Ensure all selected orders belong to the user's cart
+
     user.cart.orders.remove(*orders)
     
 

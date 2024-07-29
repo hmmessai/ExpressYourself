@@ -6,23 +6,26 @@ Express Yourself
 
 <div class="container-fluid">
     <div class="row p-2">
-        <div class="col-12 col-md-3 sticky-top" style="height: 200px;">
+        <!-- Dashboard -->
+        <div class="col-12 col-md-3 sticky-top" style="height: 80vh; background-color: #f76506;">
             <div>
               <!-- Categories -->
-              <div class="mb-5">
-                <h1>Categories</h1>
-                <ul class="list-group flex-md-column flex-row" id="categories">
+              <h1>Categories</h1>
+              <div class="mb-5 overflow-auto h-50 w-100">
+                <ul class="list-group flex-lg-column flex-row" id="categories">
                   {% for category in categories %}
                     <li class="list-group-item col-5 col-md-9">
-                      <a class="btn btn-light" data-category_id="{{category.id}}" href="">{{category.name}}</a>
+                      <a class="btn btn-custom col-12" data-category_id="{{category.id}}" href="">{{category.name}}</a>
                     </li>
                   {% endfor %}
                 </ul>
               </div>
               
               <!-- My Orders -->
-              <div class="d-none d-lg-block overflow-auto h-md-20">
+              <div class="d-none d-lg-block">
                 <h1>My Orders</h1><hr>
+              </div>
+              <div class="d-none d-lg-block overflow-auto h-50">
                 <ul class="list-group">
                   {% for order in orders %}
                     <li class="list-group-item">{{order.product.name}} {{order.color}} {{order.size}}</li>
@@ -35,6 +38,7 @@ Express Yourself
             <span></span>
         </div>
         <div class="col-lg-8">
+            <!-- Products -->
             <h1>Products available</h1><hr>
                 <div class="row row-cols-1 row-cols-lg-3 row-cols-sm-2 g-2" id="products">
                     {% for product in products %}

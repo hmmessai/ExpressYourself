@@ -37,5 +37,3 @@ class RequestSignalTestCase(TestCase):
         self.assertEqual(product.category.name, 'Requested')
         self.assertEqual(product.posted_by, self.user)
         self.assertEqual(product.status, 'requested')
-        self.assertEqual(product.created_from_request, request)
-

@@ -68,7 +68,10 @@ class SignUpView(View):
                     phone_number=phone_number
                 )
                 user.set_password(password)
-                
+
+                if role == 'seller':
+                    user.is_staff = True
+
                 user.save()
 
                 cart = Cart.objects.create(user=user)

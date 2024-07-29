@@ -23,7 +23,7 @@ class Order(models.Model):
 
     def save(self, *args, **kwargs):
         if self.product_id:
-            price = self.product.price + (0.02 * self.product.price)
+            price = Decimal(self.product.price) + (Decimal(0.02) * Decimal(str(self.product.price)))
             self.total_price = price
 
         super(Order, self).save(*args, **kwargs)
@@ -61,7 +61,7 @@ class Payment(models.Model):
 
     def save(self, *args, **kwargs):
         if self.order_id:
-            advance_payment = 0.5 * self.order.total_price
+            advance_payment = Decimal(0.5) * Decimal(self.order.total_price)
             self.advance = advance_payment
 
         super(Payment, self).save(*args, **kwargs)
