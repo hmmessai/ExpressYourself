@@ -1,3 +1,5 @@
 __pycache__/
 db.sqlite3
-media/
+media/*
+!media/profile_images/no-profile-picture-icon.webp
+!media/product_images/istockphoto-1159447883-612x612.jpg

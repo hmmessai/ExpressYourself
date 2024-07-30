@@ -3,41 +3,45 @@
 Express Yourself
 {% endblock %}
 {% block content %}
-
-<div class="container-fluid">
-    <div class="row p-2">
-        <!-- Dashboard -->
-        <div class="col-12 col-md-3 sticky-top" style="height: 80vh; background-color: #f76506;">
-            <div>
-              <!-- Categories -->
-              <h1>Categories</h1>
-              <div class="mb-5 overflow-auto h-50 w-100">
-                <ul class="list-group flex-lg-column flex-row" id="categories">
-                  {% for category in categories %}
-                    <li class="list-group-item col-5 col-md-9">
-                      <a class="btn btn-custom col-12" data-category_id="{{category.id}}" href="">{{category.name}}</a>
+<nav style="height: 50px;" class="navbar navbar-expand-lg bg-body-secondary sticky-top">
+    <div class="container-fluid">
+        <button class="navbar-toggler btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#catNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-list"></i>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end custom-bg" id="catNav">
+            <div class="d-flex flex-column flex-lg-row align-items-start">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">My Orders</a>
                     </li>
-                  {% endfor %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                          Categories
+                        </a>
+                        {% if not categories %}
+                               <a href="#">No Categories</a>
+                        {% else %}
+                        <ul class="dropdown-menu dropdown-menu-end overflow-auto" style="height: 30vh;" id="categories">
+                            
+                            {% for category in categories %}
+                                <li>
+                                    <a class="dropdown-item" data-category_id="{{ category.id }}" href="#">
+                                        {{ category.name }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </li>
                 </ul>
-              </div>
-              
-              <!-- My Orders -->
-              <div class="d-none d-lg-block">
-                <h1>My Orders</h1><hr>
-              </div>
-              <div class="d-none d-lg-block overflow-auto h-50">
-                <ul class="list-group">
-                  {% for order in orders %}
-                    <li class="list-group-item">{{order.product.name}} {{order.color}} {{order.size}}</li>
-                  {% endfor %}
-                </ul>
-              </div>
+                </div>
             </div>
         </div>
-        <div class="col-md-1">
-            <span></span>
-        </div>
-        <div class="col-lg-8">
+    </div>
+</nav>
+<div class="container">
+    <div class="row p-2">
+        <div class="col-lg-12">
             <!-- Products -->
             <h1>Products available</h1><hr>
                 <div class="row row-cols-1 row-cols-lg-3 row-cols-sm-2 g-2" id="products">

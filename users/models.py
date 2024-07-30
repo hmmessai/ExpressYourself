@@ -28,14 +28,14 @@ class CustomUser(AbstractUser):
 
 class CustomerProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='customer_profile')
-    picture = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    picture = models.ImageField(upload_to='profile_images/', default='/profile_images/no-profile-picture-icon.webp', blank=True, null=True)
 
     def __str__(self):
         return self.user.username
     
 class SellerProfile(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='seller_profile')
-    picture = models.ImageField(upload_to='profile_images/', blank=True, null=True)
+    picture = models.ImageField(upload_to='profile_images/', default='/profile_images/no-profile-picture-icon.webp', blank=True, null=True)
 
     def __str__(self):
         return self.user.username

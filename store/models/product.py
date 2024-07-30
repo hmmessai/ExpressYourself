@@ -31,7 +31,7 @@ class Product(models.Model):
     available_colors = models.ManyToManyField(Color, related_name='using_products')
     rating = models.IntegerField(choices=RATINGS, null=True)
     size = models.ManyToManyField(Size, blank=True)
-    picture = models.ImageField(upload_to='product_images/', blank=True, null=True)
+    picture = models.ImageField(upload_to='product_images/', default='product_images/istockphoto-1159447883-612x612.jpg', blank=True, null=True)
     status = models.CharField(max_length=20, null=False, default='available')
     posted_by = models.ForeignKey(
         CustomUser, 
