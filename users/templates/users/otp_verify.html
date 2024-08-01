@@ -23,9 +23,16 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Create a FormData object
         var formData = new FormData(form);
+        var phone_number = "{{ phone_number }}";
+        var user_id = '{{ id }}'
 
         // Add your additional data
-        formData.append('phone_number', '12345');  // Replace '12345' with the actual value you want to pass
+        formData.append('phone_number', phone_number);
+        formData.append('user_id', user_id);
+
+        for (var pair of formData.entries()) {
+                    console.log(pair[0] + ': ' + pair[1]);
+                }
 
         // Use fetch or XMLHttpRequest to submit the form data
         fetch(form.action, {

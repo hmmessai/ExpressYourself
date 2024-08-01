@@ -78,8 +78,9 @@ class SignUpView(View):
                 print('user saved')
 
                 code = send_otp(phone_number)
+                id = user.id
                 if code:
-                    return render(request, 'users/otp_verify.html', {'code': code, 'role': role, 'phone_number': phone_number })
+                    return render(request, 'users/otp_verify.html', {'code': code, 'role': role, 'phone_number': phone_number, 'id': id })
                 else:
                     user.delete()
                     return render(request, 'users/signup.html', {'form': form, 'error': 'Phone verification not successful. Try again.'})
@@ -103,11 +104,17 @@ class LogOutView(View):
         return redirect('index')
     
 def verify_phone(request):
-    user = request.user
     role = 'buyer'
+    print(request.POST)
     if request.method == 'POST':
+        id = request.POST.get('user_id')
+        id = int(id)
+        print(id)
+
+        user = CustomUser.objects.get(id=id)
         code = request.POST.get('code')
-        if verify_phone_number(code):
+        phone_number = request.POST.get('phone_number')
+        if verify_phone_number(code, phone_number):
             user.is_active = True
             user.save()
             cart = Cart.objects.create(user=user)
@@ -122,5 +129,5 @@ def verify_phone(request):
             return redirect('home')  # Or your desired success page
         else:
             user.delete()
-            return render(request, 'users/verify_otp.html', {'error': 'Invalid or expired OTP'})
-    return render(request, 'users/verify_otp.html')
+            return render(request, 'users/otp_verify.html', {'error': 'Invalid or expired OTP'})
+    return render(request, 'users/otp_verify.html')
