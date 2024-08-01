@@ -38,7 +38,7 @@ class Order(models.Model):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        fields = ['user', 'product', 'color', 'size']
+        fields = ['user', 'product', 'color', 'size', 'done']
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if 'product' in self.data:

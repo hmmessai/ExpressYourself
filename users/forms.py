@@ -58,6 +58,11 @@ class CustomUserForm(forms.ModelForm):
         if CustomUser.objects.filter(email=email).exists():
             raise forms.ValidationError('A user with that email already exists.')
         return email
+    
+    def clean_phone_number(self):
+        phone = self.cleaned_data.get('phone_number')
+        formatted_phone_number = '+251' + phone[1:]
+        return formatted_phone_number
 
     def clean_password2(self):
         cd = self.cleaned_data

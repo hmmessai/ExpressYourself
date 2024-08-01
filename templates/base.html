@@ -109,14 +109,6 @@
             align-items: center;
         }
 
-        .navbar-collapse-custom {
-            position: absolute;
-            top: 60px; /* Adjust based on the height of your navbar */
-            right: 0;
-            left: 0;
-            z-index: 1000;
-            background-color: white; /* Or any background color you prefer */
-        }
 
     </style>
 </head>
@@ -128,15 +120,15 @@
                 <a class="navbar-brand" href="#">Express Yourself</a>
             </div>
             
-            <div class="search-container">
-                <form class="d-flex" role="search">
+            <div class="d-flex flex-grow-1 justify-content-center">
+                <form class="d-flex w-75" role="search">
                     <input class="form-control w-100 me-2 p-1" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn p-1 custom-btn px-3" type="submit">Search</button>
+                    <button class="btn p-1 custom-btn px-5" type="submit">Search</button>
                 </form>
             </div>
           
             <div>
-                <button class="navbar-toggler btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler dropdown-toggler btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="bi bi-list"></i>
                 </button>
                 <div class="collapse navbar-collapse custom-bg" id="navbarNav">

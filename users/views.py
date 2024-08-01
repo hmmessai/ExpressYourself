@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from users.models import CustomUser, CustomerProfile, SellerProfile
 from store.models.order import Cart
 from .forms import CustomUserForm, CustomLoginForm
+from utilities.otp import send_otp, verify_phone_number
 
 
 class ViewProfile(LoginRequiredMixin, View):
@@ -68,71 +69,29 @@ class SignUpView(View):
                     phone_number=phone_number
                 )
                 user.set_password(password)
+                user.is_active = False
 
                 if role == 'seller':
                     user.is_staff = True
 
                 user.save()
+                print('user saved')
 
-                cart = Cart.objects.create(user=user)
-
-                if role == 'buyer':
-                    user_profile = CustomerProfile.objects.create(user=user)
-                elif role == 'seller':
-                    user_profile = SellerProfile.objects.create(user=user)
+                code = send_otp(phone_number)
+                if code:
+                    return render(request, 'users/otp_verify.html', {'code': code, 'role': role, 'phone_number': phone_number })
                 else:
                     user.delete()
-                    return render(request, 'users/signup.html', {'form': form})
+                    return render(request, 'users/signup.html', {'form': form, 'error': 'Phone verification not successful. Try again.'})
             except Exception as e:
-                return render(request, 'users/signup.html', {'form': form})
-            login(request, user)
+                print('inside exception')
+                print(e)
+                user.delete()
+                return render(request, 'users/signup.html', {'form': form, 'error': 'Signup not successful'})
+            # login(request, user)
 
-            return redirect('home')
+            # return redirect('home')
         return render(request, 'users/signup.html', {'form': form})
-    
-
-
-
-
-        # username = request.POST['username']
-        # email = request.POST['email']
-        # password1 = request.POST['password1']
-        # password2 = request.POST['password2']
-        # phone_number = request.POST['phone_number']
-        # role = request.POST['role']
-
-        # if password1 == password2:
-        #     if CustomUser.objects.filter(username=username).exists():
-        #         return render(request, 'users/signup.html', {'error': 'Username already exists'})
-        #     if CustomUser.objects.filter(email=email).exists():
-        #         return render(request, 'users/signup.html', {'error': 'Email already exists'})
-
-        #     try:
-        #         user = CustomUser.objects.create_user(username=username, email=email, password=password1, phone_number=phone_number)
-        #         cart = Cart.objects.create(user=user)
-                
-        #         if role == 'Buyer':
-        #             user_profile = CustomerProfile.objects.create(user=user)
-        #         elif role == 'Seller':
-        #             user_profile = SellerProfile.objects.create(user=user)
-        #         else:
-        #             user.delete()
-        #             return render(request, 'users/signup.html', {'error': 'Invalid role selected'})
-                
-        #         user.save()
-        #         user_profile.save()
-
-        #         # authenticate and login user
-        #         user = authenticate(username=username, password=password1)
-        #         if user is not None:
-        #             login(request, user)
-        #             return redirect('home')
-        #         else:
-        #             return render(request, 'users/signup.html', {'error': 'Authentication failed'})
-        #     except Exception as e:
-        #         return render(request, 'users/signup.html', {'error': str(e)})
-        # else:
-        #     return render(request, 'users/signup.html', {'error': 'Passwords do not match'})
 
 
 class LogOutView(View):
@@ -142,3 +101,26 @@ class LogOutView(View):
     def post(self, request):
         logout(request)
         return redirect('index')
+    
+def verify_phone(request):
+    user = request.user
+    role = 'buyer'
+    if request.method == 'POST':
+        code = request.POST.get('code')
+        if verify_phone_number(code):
+            user.is_active = True
+            user.save()
+            cart = Cart.objects.create(user=user)
+            if role == 'buyer':
+                user_profile = CustomerProfile.objects.create(user=user)
+            elif role == 'seller':
+                user_profile = SellerProfile.objects.create(user=user)
+            else:
+                user.delete()
+                return render(request, 'users/signup.html', {'error': 'Invalid role selected'})
+            login(request, user)
+            return redirect('home')  # Or your desired success page
+        else:
+            user.delete()
+            return render(request, 'users/verify_otp.html', {'error': 'Invalid or expired OTP'})
+    return render(request, 'users/verify_otp.html')

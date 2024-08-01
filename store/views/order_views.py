@@ -72,3 +72,9 @@ def get_product_data(request, product_id):
         'sizes': [size.name for size in product.size.all()],
     }
     return JsonResponse(product_data)
+
+def my_orders(request):
+    if request.user:
+        user = request.user
+        orders = Order.objects.filter(user=user)
+    return render(request, 'store/my_orders.html', {'orders': orders})
