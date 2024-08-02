@@ -49,20 +49,19 @@ def view_cart(request):
     return render(request, 'store/cart.html', {'cart': cart})
 
 def checkout(request):
-    selected_orders = request.POST.getlist('items')
-    orders = []
-    user = request.user
+    if request.method == 'POST':
+        selected_orders = request.POST.getlist('items')
+        orders = []
+        user = request.user
 
-    print(selected_orders)
+        print(selected_orders)
 
-    orders = Order.objects.filter(id__in=selected_orders)
+        orders = Order.objects.filter(id__in=selected_orders)
 
-    print(orders)
+        print(orders)
 
-    user.cart.orders.remove(*orders)
-    
-
-    return redirect('view_cart')
+        user.cart.orders.remove(*orders)
+        return redirect('view_cart')
 
 def get_product_data(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -76,5 +75,5 @@ def get_product_data(request, product_id):
 def my_orders(request):
     if request.user:
         user = request.user
-        orders = Order.objects.filter(user=user)
+        orders = Order.objects.filter(user=user, cart=None)
     return render(request, 'store/my_orders.html', {'orders': orders})

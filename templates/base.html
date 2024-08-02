@@ -108,6 +108,33 @@
             align-items: center;
         }
 
+        /* button visible only on hover */
+        .btn-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            width: 40px; /* Adjust to icon size */
+            height: 40px; /* Adjust to icon size */
+            overflow: hidden;
+            transition: width 0.3s;
+        }
+        .btn-icon .btn-text {
+            display: inline-block;
+            margin-left: 5px;
+            white-space: nowrap;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.2s linear;
+        }
+        .btn-icon:hover {
+            width: auto;
+            padding: 0 10px;
+        }
+        .btn-icon:hover .btn-text {
+            visibility: visible;
+            opacity: 1;
+        }
 
     </style>
 </head>
@@ -144,7 +171,10 @@
                                 <a class="btn btn-light mx-2" href="{% url 'home' %}"><i class="bi bi-house bi-lg"></i> Home</a>
                             {% elif request.path == home %}
                                 <a class="btn btn-light mx-2" href="{% url 'view_profile' %}"><i class="bi bi-person-circle bi-lg"></i></a>
-                                <i class="bi bi-alarm icon-medium" data-bs-toggle="tooltip" title="Alarm Icon"></i>
+                                <button class="btn btn-primary btn-icon">
+                                    <i class="bi bi-house"></i>
+                                    <span class="btn-text">Home</span>
+                                </button>
                             {% else %}
                                 <a class="btn btn-light mx-2" href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a>
                                 <a class="btn btn-light mx-2" href="{% url 'view_profile' %}"><i class="bi bi-person-circle"></i> View Profile</a>

@@ -7,6 +7,9 @@ My Orders
     <h1 class="pb-3 text-center">My Orders</h1>
     <div class="form-control h-100 overflow-auto">
         <ul class="list-group">
+            {% if not orders %}
+            <h3 class="text-center">You have made no orders.</h3>
+            {% else %}
             {% for order in orders %}
                 <li class="list-group-item d-flex justify-content-between align-items-center">
                   {{order.product}}
@@ -21,6 +24,7 @@ My Orders
                     {% endif %}
                 </li>
             {% endfor %}
+            {% endif %}
             </ul>
     </div>
     
