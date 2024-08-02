@@ -108,12 +108,14 @@ def verify_phone(request):
     print(request.POST)
     if request.method == 'POST':
         id = request.POST.get('user_id')
+        role = request.POST.get('role')
+        code = request.POST.get('code')
+        phone_number = request.POST.get('phone_number')
         id = int(id)
         print(id)
 
         user = CustomUser.objects.get(id=id)
-        code = request.POST.get('code')
-        phone_number = request.POST.get('phone_number')
+        print(user)
         if verify_phone_number(code, phone_number):
             user.is_active = True
             user.save()
