@@ -16,6 +16,18 @@
             background-color: #ca0111; /* Adjust this value to your desired background color */
         }
 
+        .btn-custom {
+            background-color: #f82a3b;
+            border-radius: 20px;
+            border-color: #ccc;
+            filter: invert(0.1);
+            font-size: x-large;
+        }
+
+        .btn-custom:hover{
+            background-color: #dd2333;
+        }
+
         .custom-bg .dropdown-item {
             background-color: #f0f0f0; /* Adjust this value to match the dropdown menu background */
         }
@@ -114,14 +126,14 @@
             align-items: center;
             justify-content: center;
             padding: 0;
-            width: 40px; /* Adjust to icon size */
-            height: 40px; /* Adjust to icon size */
+            width: 40px;
+            height: 40px; 
             overflow: hidden;
             transition: width 0.3s;
         }
         .btn-icon .btn-text {
-            display: inline-block;
-            margin-left: 5px;
+            display: none;
+            margin-left: 4px;
             white-space: nowrap;
             visibility: hidden;
             opacity: 0;
@@ -132,8 +144,19 @@
             padding: 0 10px;
         }
         .btn-icon:hover .btn-text {
+            display: inline-block;
             visibility: visible;
             opacity: 1;
+        }
+
+        /* Scrolling */
+        .hide-scrollbar {
+            overflow: auto; /* Allow scrolling */
+            scrollbar-width: none; /* For Firefox */
+        }
+
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none; /* For WebKit browsers */
         }
 
     </style>
@@ -143,10 +166,10 @@
     <nav style="height: 60px;" class="navbar navbar-expand-lg custom-bg text-light sticky-top">
         <div class="container-fluid d-flex justify-content-between align-items-center">
             <div class="navbar-brand-container">
-                <a class="navbar-brand text-light" href="#">Express Yourself</a>
+                <a class="navbar-brand text-light" href="{% url 'home' %}">Express Yourself</a>
             </div>
             
-            <div class="d-flex flex-grow-1 justify-content-center">
+            <div class="d-none d-md-flex flex-grow-1 justify-content-center">
                 <form class="d-flex w-75" role="search">
                     <input class="form-control w-100 me-2 p-1" type="search" placeholder="Search" aria-label="Search">
                     <button class="btn p-1 custom-btn px-5" type="submit">Search</button>
@@ -160,28 +183,38 @@
                 <div class="collapse navbar-collapse custom-bg" id="navbarNav">
                     <div class="d-flex flex-column flex-lg-row align-items-end">
                         {% if user.is_authenticated %}
-                            <form method="POST" action="{% url 'logout' %}">
-                                {% csrf_token %}
-                                <button class="btn btn-dark mx-2">Logout</button>
-                            </form>
                             {% url 'view_profile' as view_profile %}
                             {% url 'home' as home %}
                             {% url 'view_cart' as viewcart %}
                             {% if request.path == view_profile %}
-                                <a class="btn btn-light mx-2" href="{% url 'home' %}"><i class="bi bi-house bi-lg"></i> Home</a>
+                                <a class="btn btn-custom mx-2 btn-icon" href="{% url 'home' %}">
+                                    <i class="bi bi-house bi-lg"></i>
+                                    <span class="btn-text" style="font-size: large;">Home</span>
+                                </a>
                             {% elif request.path == home %}
-                                <a class="btn btn-light mx-2" href="{% url 'view_profile' %}"><i class="bi bi-person-circle bi-lg"></i></a>
-                                <button class="btn btn-primary btn-icon">
-                                    <i class="bi bi-house"></i>
-                                    <span class="btn-text">Home</span>
-                                </button>
+                                <a class="btn btn-custom mx-2 btn-icon" href="{% url 'view_profile' %}">
+                                    <i class="bi bi-person-circle bi-lg"></i>
+                                    <span class="btn-text" style="font-size: large;">My Profile</span>
+                                </a>
                             {% else %}
-                                <a class="btn btn-light mx-2" href="{% url 'home' %}"><i class="bi bi-house"></i> Home</a>
-                                <a class="btn btn-light mx-2" href="{% url 'view_profile' %}"><i class="bi bi-person-circle"></i> View Profile</a>
+                                <a class="btn btn-custom mx-2 btn-icon" href="{% url 'home' %}">
+                                    <i class="bi bi-house"></i>
+                                    <span class="btn-text" style="font-size: large;">Home</span>
+                                </a>
+                                <a class="btn btn-custom mx-2 btn-icon" href="{% url 'view_profile' %}">
+                                    <i class="bi bi-person-circle"></i>
+                                    <span class="btn-text" style="font-size: large;">My Profile</span>
+                                </a>
                             {% endif %}
                             {% if request.path != viewcart %}
-                                <a class="btn btn-primary mx-2" href="{% url 'view_cart' %}"><i class="bi bi-cart"></i> View Cart</a>
+                                <a class="btn btn-custom mx-2 btn-icon" href="{% url 'view_cart' %}"><i class="bi bi-cart"></i>
+                                    <span class="btn-text" style="font-size: large;">My Cart</span>
+                                </a>
                             {% endif %}
+                            <form method="POST" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button class="btn btn-dark mx-2">Logout</button>
+                            </form>
                         {% else %}
                             <a class="btn btn-dark mx-2" href="{% url 'login' %}">Login</a>
                             <a class="btn btn-dark mx-2" href="{% url 'signup' %}">Signup</a>

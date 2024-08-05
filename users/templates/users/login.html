@@ -1,35 +1,44 @@
 {% extends 'base.html'%}
 {% block content%}
-    <div class="col-lg-6 mx-auto p-5">
-      <form class="form-control p-5" method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-        <h2 class="text-center mb-4">Login</h2>
-        {% if form.non_field_errors %}
-            <div class="text-danger text-center">
-                {% for error in form.non_field_errors %}
-                    <p>{{ error }}</p>
-                {% endfor %}
+<div class="container-fluid" style="height: 76.5vh;">
+  <div class="col-lg-6 mx-auto p-5 h-100">
+    <form class="form-control p-5" method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      <h2 class="text-center mb-4">Login</h2>
+      {% if form.non_field_errors %}
+          <div class="text-danger text-center">
+              {% for error in form.non_field_errors %}
+                  <p>{{ error }}</p>
+              {% endfor %}
+          </div>
+      {% endif %}
+      <div class="form-floating mb-3">
+        {{ form.username }}
+        <label for="{{ form.username.id_for_label }}">Username</label>
+        {% if form.username.errors %}
+            <div class="error mb-2 text-danger mx-4">
+                {{ form.username.errors.0 }}
             </div>
         {% endif %}
-        <div class="form-floating mb-3">
-          {{ form.username }}
-          <label for="{{ form.username.id_for_label }}">Username</label>
-          {% if form.username.errors %}
+      </div>
+
+      <div class="form-floating mb-3">
+          {{ form.password }}
+          <label for="{{ form.password.id_for_label }}">Password</label>
+          {% if form.password.errors %}
               <div class="error mb-2 text-danger mx-4">
-                  {{ form.username.errors.0 }}
+                  {{ form.password.errors.0 }}
               </div>
           {% endif %}
-        </div>
-
-        <div class="form-floating mb-3">
-            {{ form.password }}
-            <label for="{{ form.password.id_for_label }}">Password</label>
-            {% if form.password.errors %}
-                <div class="error mb-2 text-danger mx-4">
-                    {{ form.password.errors.0 }}
-                </div>
-            {% endif %}
-        </div>
+      </div>
+      <div class="form-floating text-center">
+        <button type='submit' class="btn btn-dark px-5">Log in</button>
+      </div>
+    </div>
+  </form>
+  </div>
+</div>
+    
         <!-- <div class="row">
           <div class="col-md-10 mx-auto">
             <h2 class="text-center p-2 mb-3">Login</h2>
@@ -49,11 +58,6 @@
             </div>
             
         </div> -->
-        <div class="form-floating text-center">
-          <button type='submit' class="btn btn-dark px-5">Log in</button>
-        </div>
-      </div>
-    </form>
-    </div>
+        
     
 {% endblock %}
