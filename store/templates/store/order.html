@@ -4,22 +4,98 @@ Order
 {% endblock %}
 
 {% block content %}
-<h1>{{product.name}}</h1>
-<p>{{product.category.name}}</p>
-<form class="form-control" method="POST" action="{% url 'order' product.id user.id %}">
-    {% csrf_token %}
-    <select name="color" >
-        {% for color in product.available_colors.all %}
-            <option value="{{color}}">{{ color }}</option>
-        {% endfor %}
-    </select>
-    <br>
-    <select name="size" id="">
-        {% for size in product.size.all %}
-            <option value="{{ size }}">{{size}}</option>
-        {% endfor %}
-    </select>
-    <button type="submit">Order</button>
-</form>
+<div class="container p-5" style="height: auto;">
+    <div class="row justify-content-between">
+        <div class="col-md-2">
+            <img src="{{product.picture.url}}" width="300" height="300" alt="{{product.name}}'s picture">
+        </div>
+        <div class="col-md-8 align-items-center">
+            <div class="row">
+                <h1 class="flex flex-column">{{product.name}}
+                    <div class="star-rating">
+                        {% load custom_filters %}
+                        {% with rating=product.rating|to_int %}
+                            {% for i in "54321" %}
+                                {% if rating|to_int >= i|to_int %}
+                                    <input type="radio" id="star{{ i }}" value="{{ i }}" disabled checked>
+                                {% else %}
+                                    <input type="radio" id="star{{ i }}" value="{{ i }}" disabled>
+                                {% endif %}
+                                <label for="star{{ i }}">&#9733;</label>
+                            {% endfor %}
+                        {% endwith %}
+                    </div>
+                    <span class="badge bg-warning rounded-pill">{{product.rating}}</span>
+                </h1>
+                <span class="badge bg-light text-dark w-auto">{{product.category.name}}</span>
+                <h1>ETB {{product.price}}</h1>
+                <p>{{product.description}}</p> 
+            </div>
+            <div class="row justify-content-center">
+                <form class="bg-light col-8" method="POST" action="{% url 'order' product.id %}">
+                    {% csrf_token %}
+                    <p class="text-center p-3">Choose the size and color below to order.</p>
+                    <select class="form-control" name="color" >
+                        {% for color in product.available_colors.all %}
+                            <option value="{{color}}">{{ color }}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <select class="form-control col-8" name="size" id="">
+                        {% for size in product.size.all %}
+                            <option value="{{ size }}">{{size}}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="row mt-5 mb-3 justify-content-center">
+                        <div class="col-8 d-flex justify-content-between">
+                            <button class="btn btn-dark" type="submit">Order</button>
+                            <form method="post" action="{% url 'add_to_cart' product.id %}">
+                                {% csrf_token %}
+                                <button class="btn btn-dark rounded-pill" type="submit"><i class="bi bi-cart bi-5x"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+        <div class="row p-5">
+            <h1>Related Products</h1>
+            <hr>
+            <div class="row row-cols-1 row-cols-lg-3 row-cols-sm-2 g-2" id="products">
+                {% for p in products %}
+                {% if p != product %}
+                <div class="col">
+                        <a href="{% url 'order' p.id %}" style="text-decoration: none;">
+                            <div class="card">
+                                <img src="{{ p.picture.url }}" class="card-img-top" style="width: 100%; height: auto;" alt="{{ p.name }}">
+                                <hr class="card-hr">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ p.name }}</h5>
+                                    <p class="card-text">{{ p.description }}</p>
+                                    <div class="row">
+                                        <!-- <div class="col-md-3 col-sm-5">
+                                            <button type="button" id="orderbtn" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#orderModal" data-user_id="{{user.id}}" data-p_id="{{ p.id }}" onclick="event.stopPropagation();">Order</button>
+                                        </div> -->
+                                        <span class="col-md-4 col-sm-2"></span>
+                                        <div class="col-md-5 col-sm-5">
+                                            <form method="post" action="{% url 'add_to_cart' p.id %}">
+                                                {% csrf_token %}
+                                                <button class="btn btn-dark" type="submit"><i class="bi bi-cart bi-5x"></i></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        
+                </div>
+                {% else %}
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 

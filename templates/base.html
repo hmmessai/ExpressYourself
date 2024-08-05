@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     {% load static %}
+    {% load custom_filters %}
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
     <title>
@@ -12,6 +13,9 @@
         {% endblock %}
     </title>
     <style>
+        body{
+            background-color: #f6eff0;
+        }
         .custom-bg {
             background-color: #ca0111; /* Adjust this value to your desired background color */
         }
@@ -158,6 +162,27 @@
         .hide-scrollbar::-webkit-scrollbar {
             display: none; /* For WebKit browsers */
         }
+
+        /* Star rating */
+        .star-rating {
+            direction: rtl;
+            display: inline-flex;
+        }
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+        .star-rating label {
+            font-size: 2rem;
+            color: #ddd;
+            cursor: pointer;
+        }
+        .star-rating input[type="radio"]:checked + label {
+            color: #ffc107;
+        }
+        /* .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #ffc107;
+        } */
 
     </style>
 </head>

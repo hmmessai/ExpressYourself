@@ -12,6 +12,7 @@ from store.models.order import Order, Cart
 def order(request, product_id):
     product = Product.objects.get(id=product_id)
     user = request.user
+    products = Product.objects.filter(category=product.category)
     if request.method == 'POST':
         color_name = request.POST['color'] 
         size_name = request.POST['size']
@@ -20,9 +21,8 @@ def order(request, product_id):
         size = Size.objects.get(name=size_name)
 
         order = Order.objects.create(user=user, product=product, color=color, size=size)
-        order.save()
         return redirect('home')
-    return render(request, 'store/order.html', {'product': product})
+    return render(request, 'store/order.html', {'product': product, 'products': products})
 
 
 def add_to_cart(request, product_id):
