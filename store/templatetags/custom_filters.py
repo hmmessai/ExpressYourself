@@ -8,3 +8,7 @@ def to_int(value):
         return int(value)
     except (ValueError, TypeError):
         return value
+    
+@register.filter
+def excerpt(full_description):
+    return f"{full_description[:20]}....."

@@ -51,21 +51,21 @@ Express Yourself
                     {% for product in products %}
                     <div class="col">
                             <a href="{% url 'order' product.id %}" style="text-decoration: none;">
-                                <div class="card">
+                                <div class="card" style="position: relative;">
+                                    <div style="display: block; z-index: 100; position: absolute; top: 8px; right: 8px;">
+                                        <span class="btn btn-warning rounded-pill">ETB {{product.price}}</span>
+                                    </div>
                                     <img src="{{ product.picture.url }}" class="card-img-top" style="width: 100%; height: auto;" alt="{{ product.name }}">
                                     <hr class="card-hr">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ product.name }}</h5>
-                                        <p class="card-text">{{ product.description }}</p>
-                                        <div class="row">
-                                            <!-- <div class="col-md-3 col-sm-5">
-                                                <button type="button" id="orderbtn" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#orderModal" data-user_id="{{user.id}}" data-product_id="{{ product.id }}" onclick="event.stopPropagation();">Order</button>
-                                            </div> -->
-                                            <span class="col-md-4 col-sm-2"></span>
-                                            <div class="col-md-5 col-sm-5">
+                                        {% load custom_filters %}
+                                        <p class="card-text">{{ product.description| excerpt }}</p>
+                                        <div class="row justify-content-center">
+                                            <div class="col-6">
                                                 <form method="post" action="{% url 'add_to_cart' product.id %}">
                                                     {% csrf_token %}
-                                                    <button class="btn btn-dark" type="submit"><i class="bi bi-cart bi-5x"></i></button>
+                                                    <button class="btn btn-dark rounded-pill" type="submit"><i class="bi bi-cart bi-5x"></i> Add to Cart</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -163,21 +163,20 @@ $(document).ready(function() {
                                 const productHtml = `
                                     <div class="col">
                                         <a href="/order/${product.id}" style="text-decoration: none;">
-                                            <div class="card ">
+                                            <div class="card" style="position: relative;">
+                                                <div style="display: block; z-index: 100; position: absolute; top: 8px; right: 8px;">
+                                                    <span class="btn btn-warning rounded-pill">ETB ${product.price}</span>
+                                                </div>
                                                 <img src="${product.picture}" class="card-img-top" style="width: 100%; height: auto;" alt="${product.name}">
                                                 <hr class="card-hr">
                                                 <div class="card-body">
                                                     <h5 class="card-title">${product.name}</h5>
                                                     <p class="card-text">${product.description.replace(/\n/g, '<br>')}</p>
-                                                    <div class="row">
-                                                        <div class="col-md-4">
-                                                            <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#orderModal" data-product_id=${product.id}>Order</button>
-                                                        </div>
-                                                        <span class="col-md-2"></span>
-                                                        <div class="col-md-6">
+                                                    <div class="row justify-content-center">
+                                                        <div class="col-6">
                                                             <form method="post" action="/add-to-cart/${product.id}/">
                                                                 <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
-                                                                <button class="btn btn-dark" type="submit"><i class="bi bi-cart bi-4x"></i></button>
+                                                                <button class="btn btn-dark rounded-pill" type="submit"><i class="bi bi-cart bi-4x"></i> Add to Cart</button>
                                                             </form>
                                                         </div>
                                                     </div>

@@ -15,6 +15,7 @@ def filter_product_by_category(request, category_id):
                 'id': product.id,
                 'description': product.description,
                 'picture': product.picture.url,
+                'price': product.price,
             }
             product_list.append(data)
     

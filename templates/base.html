@@ -8,6 +8,8 @@
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
     <link href="{% static 'css/main_styles.css' %}"  rel="stylesheet">
+    <link rel="icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
     <title>
         {% block title %}
         Home
@@ -22,9 +24,9 @@
         }
 
         .btn-custom {
-            background-color: #f82a3b;
+            background-color: #ca0111;
             border-radius: 20px;
-            border-color: #ccc;
+            border-color: #ca0111;
             filter: invert(0.1);
             font-size: x-large;
         }
@@ -189,10 +191,12 @@
 </head>
 <body>
   <header>
-    <nav style="height: 60px;" class="navbar navbar-expand-lg custom-bg text-light sticky-top">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <div class="navbar-brand-container">
-                <a class="navbar-brand text-light" href="{% url 'home' %}">Express Yourself</a>
+    <nav style="height: 60px;" class="navbar navbar-expand-lg bg-dark text-light sticky-top">
+        <div class="container-fluid d-flex justify-content-between align-items-center" style="height: inherit;">
+            <div class="navbar-brand-container" style="height: inherit;">
+                <a class="navbar-brand text-light" href="{% url 'home' %}">
+                    <img src="{{MEDIA_URL}}logo.png" style="max-height: 100%; width: 120px;" alt="Logo">
+                </a>
             </div>
             
             <div class="d-none d-md-flex flex-grow-1 justify-content-center">
@@ -202,11 +206,11 @@
                 </form>
             </div>
           
-            <div class="bg-light text-light">
+            <div class="text-light">
                 <button class="navbar-toggler dropdown-toggler btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="bi bi-list"></i>
                 </button>
-                <div class="collapse navbar-collapse custom-bg" id="navbarNav">
+                <div class="collapse navbar-collapse" id="navbarNav">
                     <div class="d-flex flex-column flex-lg-row align-items-end">
                         {% if user.is_authenticated %}
                             {% url 'view_profile' as view_profile %}

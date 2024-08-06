@@ -6,10 +6,10 @@ Order
 {% block content %}
 <div class="container p-5" style="height: auto;">
     <div class="row justify-content-between">
-        <div class="col-md-2">
-            <img src="{{product.picture.url}}" width="300" height="300" alt="{{product.name}}'s picture">
+        <div class="col-12 col-lg-3 h-100">
+            <img src="{{product.picture.url}}" class="img-fluid" alt="{{product.name}}'s picture">
         </div>
-        <div class="col-md-8 align-items-center">
+        <div class="col-12 col-lg-8 align-items-center">
             <div class="row">
                 <h1 class="flex flex-column">{{product.name}}
                     <div class="star-rating">
@@ -55,7 +55,7 @@ Order
                     <hr>
                     <div class="row mt-2 mb-3 justify-content-center">
                         <div class="col-12 text-center">
-                            <button class="btn btn-dark rounded-pill w-25" type="submit">Order</button>
+                            <button class="btn btn-dark rounded-pill w-50 w-md-25" type="submit">Order</button>
                         </div>
                     </div>
                 </form>
@@ -63,7 +63,7 @@ Order
                     <div class="col-12">
                         <form method="post" action="{% url 'add_to_cart' product.id %}">
                             {% csrf_token %}
-                            <button class="btn btn-dark rounded-pill w-25" type="submit"><i class="bi bi-cart bi-5x"></i>  Add to Cart</button>
+                            <button class="btn btn-dark rounded-pill w-50 w-md-25" type="submit"><i class="bi bi-cart bi-5x"></i>  Add to Cart</button>
                         </form>
                     </div>
                 </div>
@@ -77,21 +77,20 @@ Order
                 {% if p != product %}
                 <div class="col">
                         <a href="{% url 'order' p.id %}" style="text-decoration: none;">
-                            <div class="card">
+                            <div class="card" style="position: relative;">
+                                <div style="display: block; z-index: 100; position: absolute; top: 8px; right: 8px;">
+                                    <span class="btn btn-warning rounded-pill">ETB {{product.price}}</span>
+                                </div>
                                 <img src="{{ p.picture.url }}" class="card-img-top" style="width: 100%; height: auto;" alt="{{ p.name }}">
                                 <hr class="card-hr">
                                 <div class="card-body">
                                     <h5 class="card-title">{{ p.name }}</h5>
                                     <p class="card-text">{{ p.description }}</p>
-                                    <div class="row">
-                                        <!-- <div class="col-md-3 col-sm-5">
-                                            <button type="button" id="orderbtn" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#orderModal" data-user_id="{{user.id}}" data-p_id="{{ p.id }}" onclick="event.stopPropagation();">Order</button>
-                                        </div> -->
-                                        <span class="col-md-4 col-sm-2"></span>
-                                        <div class="col-md-5 col-sm-5">
+                                    <div class="row justify-content-center">
+                                        <div class="col-6">
                                             <form method="post" action="{% url 'add_to_cart' p.id %}">
                                                 {% csrf_token %}
-                                                <button class="btn btn-dark" type="submit"><i class="bi bi-cart bi-5x"></i></button>
+                                                <button class="btn btn-dark rounded-pill" type="submit"><i class="bi bi-cart bi-5x"></i> Add to Cart</button>
                                             </form>
                                         </div>
                                     </div>
