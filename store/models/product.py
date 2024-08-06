@@ -12,6 +12,7 @@ RATINGS = [
 
 class Size(models.Model):
     name = models.CharField(max_length=50, null=False)
+    short_letter = models.CharField(max_length=2, null=False)
 
     def __str__(self) -> str:
         return self.name

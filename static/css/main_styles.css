@@ -1,0 +1,41 @@
+@font-face {
+    font-family: 'Montserrat';
+    src: url('/static/fonts/YourFontFile.woff2') format('woff2'),
+         url('/static/fonts/YourFontFile.woff') format('woff'),
+         url('/static/fonts/Montserrat-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Example usage */
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Size and color options  */
+
+.size-options{
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+    justify-content: flex-start;
+    gap: 2rem;
+}
+
+.size-options label{
+    padding: 5px 10px 5px;
+    background-color: white;
+    border: 1px solid grey;
+    border-radius: 5px;
+
+}
+
+.size-options input{
+    display: none;
+
+}
+
+.size-options input:checked + label{
+    border: black 2px solid;
+    border-radius: 5px;
+}

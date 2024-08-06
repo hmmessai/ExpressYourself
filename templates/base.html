@@ -7,6 +7,7 @@
     {% load custom_filters %}
     <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
     <link href="{% static 'bootstrap-icons/bootstrap-icons.css' %}" rel="stylesheet">
+    <link href="{% static 'css/main_styles.css' %}"  rel="stylesheet">
     <title>
         {% block title %}
         Home
@@ -68,13 +69,14 @@
         }
 
         .form-check-input:checked{
-            background-color: #f76506;
+            background-color: white;
             border-color: black;
         }
 
         .form-control:focus {
             border-color: #f76506; /* Custom border color */
             box-shadow: 0 0 0 0.2rem rgb(247, 101, 6, 0.2); /* Custom shadow color */
+            background-color: white;
         }
 
         .form-control {
@@ -85,8 +87,7 @@
         }
 
         .filled {
-            background-color: #e9803a; 
-            border-color: #ffeae6;
+            background-color: #ffffff;
         }
 
         .side-panel {

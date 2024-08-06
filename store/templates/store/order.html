@@ -25,40 +25,45 @@ Order
                             {% endfor %}
                         {% endwith %}
                     </div>
-                    <span class="badge bg-warning rounded-pill">{{product.rating}}</span>
                 </h1>
                 <span class="badge bg-light text-dark w-auto">{{product.category.name}}</span>
                 <h1>ETB {{product.price}}</h1>
                 <p>{{product.description}}</p> 
             </div>
-            <div class="row justify-content-center">
-                <form class="bg-light col-8" method="POST" action="{% url 'order' product.id %}">
+            <div class="row justify-content-center bg-light">
+                <form class="col-9 text-center" method="POST" action="{% url 'order' product.id %}">
                     {% csrf_token %}
-                    <p class="text-center p-3">Choose the size and color below to order.</p>
-                    <select class="form-control" name="color" >
-                        {% for color in product.available_colors.all %}
-                            <option value="{{color}}">{{ color }}</option>
-                        {% endfor %}
-                    </select>
-                    <br>
-                    <select class="form-control col-8" name="size" id="">
-                        {% for size in product.size.all %}
-                            <option value="{{ size }}">{{size}}</option>
-                        {% endfor %}
-                    </select>
-                    <div class="row mt-5 mb-3 justify-content-center">
-                        <div class="col-8 d-flex justify-content-between">
-                            <button class="btn btn-dark" type="submit">Order</button>
-                            
+                    <div class="form-group p-3 d-flex flex-row justify-content-around">
+                        <label class="mx-3" for="size-options">Color: </label>
+                        <div class="size-options">
+                            {% for color in product.available_colors.all %}
+                                <input type="radio" id="size-{{color.name}}" name="color" value="{{color}}">
+                                <label for="size-{{color.name}}" style="background-color: {{color.hex_value}}; padding: 15px 25px 15px;"></label>
+                            {% endfor %}
                         </div>
                     </div>
-                    
+                    <hr>
+                    <div class="form-group p-3 d-flex flex-row justify-content-around">
+                        <label class="mx-3" for="size-options">Size: </label>
+                        <div class="size-options">
+                            {% for size in product.size.all %}
+                                <input type="radio" id="size-{{size.short_letter}}" name="size" value="{{size}}">
+                                <label for="size-{{size.short_letter}}">{{size.short_letter}}</label>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mt-2 mb-3 justify-content-center">
+                        <div class="col-12 text-center">
+                            <button class="btn btn-dark rounded-pill w-25" type="submit">Order</button>
+                        </div>
+                    </div>
                 </form>
-                <div class="row mt-5 mb-3 justify-content-center">
-                    <div class="col-8 d-flex justify-content-between">
+                <div class="col-12 mb-3 text-center">
+                    <div class="col-12">
                         <form method="post" action="{% url 'add_to_cart' product.id %}">
                             {% csrf_token %}
-                            <button class="btn btn-dark rounded-pill" type="submit"><i class="bi bi-cart bi-5x"></i></button>
+                            <button class="btn btn-dark rounded-pill w-25" type="submit"><i class="bi bi-cart bi-5x"></i>  Add to Cart</button>
                         </form>
                     </div>
                 </div>
