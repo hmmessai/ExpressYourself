@@ -49,14 +49,19 @@ Order
                     <div class="row mt-5 mb-3 justify-content-center">
                         <div class="col-8 d-flex justify-content-between">
                             <button class="btn btn-dark" type="submit">Order</button>
-                            <form method="post" action="{% url 'add_to_cart' product.id %}">
-                                {% csrf_token %}
-                                <button class="btn btn-dark rounded-pill" type="submit"><i class="bi bi-cart bi-5x"></i></button>
-                            </form>
+                            
                         </div>
                     </div>
                     
                 </form>
+                <div class="row mt-5 mb-3 justify-content-center">
+                    <div class="col-8 d-flex justify-content-between">
+                        <form method="post" action="{% url 'add_to_cart' product.id %}">
+                            {% csrf_token %}
+                            <button class="btn btn-dark rounded-pill" type="submit"><i class="bi bi-cart bi-5x"></i></button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="row p-5">

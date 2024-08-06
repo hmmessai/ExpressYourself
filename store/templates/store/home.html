@@ -162,6 +162,7 @@ $(document).ready(function() {
                                 console.log(product.description.replace(/\n/g, '<br>'));
                                 const productHtml = `
                                     <div class="col">
+                                        <a href="/order/${product.id}" style="text-decoration: none;">
                                             <div class="card ">
                                                 <img src="${product.picture}" class="card-img-top" style="width: 100%; height: auto;" alt="${product.name}">
                                                 <hr class="card-hr">
@@ -182,6 +183,7 @@ $(document).ready(function() {
                                                     </div>
                                                 </div>
                                             </div>
+                                        </a>
                                     </div>`;
                                         
                                 products.append(productHtml);
