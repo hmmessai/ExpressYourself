@@ -1,6 +1,7 @@
 from django.db import models
 from .catagory import Category
 from users.models import CustomUser
+from datetime import datetime
 
 RATINGS = [
     (1, '1'),

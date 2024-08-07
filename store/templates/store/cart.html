@@ -6,8 +6,6 @@ Cart
 <div class="container p-5 mb-5" style="height: 80vh;">
     <h1 class="text-center pb-3">Orders in Cart</h1>
     <div class="form-control h-100 overflow-auto">
-        <form method="post" id="mainForm" action="{% url 'checkout' %}">
-            {% csrf_token %}
             <div class="col-md-5 mx-auto">
                 <div class="accordion accordion-flush" id="accordionFlushExample">
                     {% if not cart.orders.all %}
@@ -16,9 +14,19 @@ Cart
                     </div>
                     {% else %}
                     <p class="text-center"> Choose the options to select color and size and click on the checkbox to checkout </p>
+                    <ul class="list-group">
                     {% for order in cart.orders.all %}
                         
-                        <div class="accordion-item p-3">
+                            <li class="list-group-item">
+                                <a href="#" class="btn btn-custom w-100" data-bs-toggle="modal" data-bs-target="#orderModal" data-product_id="{{order.product.id}}">
+                                    <div>
+                                        {{order.product}}
+                                    </div>
+                                </a>
+                            </li>
+                       
+                        
+                        <!-- <div class="accordion-item p-3">
                             <div class="accordion-header">
                                 <input type="checkbox" class="form-check-input me-2 col-2 align-items-center" id="checkbox{{ forloop.counter }}" name="items" value="{{order.id}}">
                                 <label for="checkbox{{ forloop.counter }}" class="form-check-label col-10">
@@ -57,20 +65,51 @@ Cart
                                     
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     {% endfor %}
-
-                    <div class="col-5 mx-auto p-5">
-                        <button class="btn btn-dark mx-auto" type="submit">Checkout</button>
-                    </div>
+                </ul>
                     {% endif %}
                 </div>
             </div>
-            
-        </form>
     </div>
 </div>
 
+
+<!-- Order Popup -->
+<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-light">
+                <div class="col-md-12 d-flex justify-content-between align-items-center">
+                    <h5 class="modal-title" id="orderModalLabel">Order Product</h5>
+                    <button type="button" class="close btn btn-danger" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="modalForm" method="POST" action="">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <label for="productName" >Product Name</label>
+                        <input type="text" class="form-control" id="productName" name="productName" readonly>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="productName" >Color </label>
+                        <select class="form-control" name="color" id="color"></select>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="productName" >Size </label>
+                        <select class="form-control" name="size" id="size"></select>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-success px-4" type="submit">Checkout</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -81,6 +120,52 @@ Cart
         $('#mainForm').on('submit', function(event) {
 
         })
+
+        $('#orderModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var productId = button.data('product_id'); // Extract product ID from data-* attributes
+
+
+            // Make an AJAX request to fetch the product data
+            $.ajax({
+                url: '{% url "get_product_data" 0 %}'.replace('0', productId),
+                method: 'GET',
+                success: function(data) {
+                    // Populate the modal with the received data
+                    $('#orderModalLabel').text('Order ' + data.name);
+                    $('#productName').val(data.name);
+
+                    // Populate colors
+                    var colorSelect = $('#color');
+                    colorSelect.empty();
+                    $.each(data.available_colors, function(index, color) {
+                        colorSelect.append($('<option>', {
+                            value: color.name,
+                            text: color.name
+                        }));
+                    });
+
+                    // Populate sizes
+                    var sizeSelect = $('#size');
+                    sizeSelect.empty();
+                    $.each(data.sizes, function(index, size) {
+                        sizeSelect.append($('<option>', {
+                            value: size.name,
+                            text: size.name
+                        }));
+                    });
+
+                    var actionUrl = "{% url 'checkout' 0 %}".replace('0', productId)
+
+                    // Set the form action
+                    var modalForm = $('#modalForm');
+                    modalForm.attr('action', actionUrl);
+                },
+                error: function(xhr, status, error) {
+                    console.error('AJAX request failed:', status, error);
+                }
+            });
+        });
     })
 
 </script>

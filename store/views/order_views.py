@@ -7,6 +7,7 @@ import json
 from users.models import CustomerProfile, SellerProfile, CustomUser
 from store.models.product import Product, Color, Size
 from store.models.order import Order, Cart
+from utilities.qr import generate_qr_code, decode_qr_code
 
 
 def order(request, product_id):
@@ -48,27 +49,24 @@ def view_cart(request):
 
     return render(request, 'store/cart.html', {'cart': cart})
 
-def checkout(request):
+def checkout(request, order_id):
     if request.method == 'POST':
         selected_orders = request.POST.getlist('items')
         orders = []
         user = request.user
+        order = Order.objects.get(id=order_id)
 
-        print(selected_orders)
+        print(order)
 
-        orders = Order.objects.filter(id__in=selected_orders)
-
-        print(orders)
-
-        user.cart.orders.remove(*orders)
+        user.cart.orders.remove(order)
         return redirect('view_cart')
 
 def get_product_data(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     product_data = {
         'name': product.name,
-        'available_colors': [color.name for color in product.available_colors.all()],
-        'sizes': [size.name for size in product.size.all()],
+        'available_colors': [{'name': color.name, 'hex_value': color.hex_value} for color in product.available_colors.all()],
+        'sizes': [{'name': size.name, 'short_name': size.short_letter} for size in product.size.all()],
     }
     return JsonResponse(product_data)
 
@@ -77,3 +75,9 @@ def my_orders(request):
         user = request.user
         orders = Order.objects.filter(user=user, cart=None)
     return render(request, 'store/my_orders.html', {'orders': orders})
+
+def order_details(request):
+    if request.method == 'POST':
+        generate_qr_code(request.order)
+
+        

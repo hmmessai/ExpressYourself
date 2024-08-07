@@ -78,46 +78,8 @@ Express Yourself
                 </div>
         </div>
     </div>
-
-        
-    
 </div>
 
-<!-- Order Popup -->
-<div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header bg-dark text-light">
-                <div class="col-md-12 d-flex justify-content-between align-items-center">
-                    <h5 class="modal-title" id="orderModalLabel">Order Product</h5>
-                    <button type="button" class="close btn btn-danger" data-bs-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            </div>
-            <div class="modal-body">
-                <form id="modalForm" method="POST" action="">
-                    {% csrf_token %}
-                    <div class="form-group mb-3">
-                        <label for="productName" >Product Name</label>
-                        <input type="text" class="form-control" id="productName" name="productName" readonly>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="productName" >Color </label>
-                        <select class="form-control" name="color" id="color"></select>
-                    </div>
-                    <div class="form-group mb-3">
-                        <label for="productName" >Size </label>
-                        <select class="form-control" name="size" id="size"></select>
-                    </div>
-                    <div class="text-center">
-                        <button class="btn btn-success px-4" type="submit">Order</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block scripts %}
