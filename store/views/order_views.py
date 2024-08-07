@@ -80,4 +80,12 @@ def order_details(request):
     if request.method == 'POST':
         generate_qr_code(request.order)
 
-        
+def make_payment(request, order_id):
+    if request.method == 'POST':
+        pass
+    order = Order.objects.get(id=order_id)
+
+    print(order.qr_code)
+    code = decode_qr_code(order.qr_code)
+   
+    return render(request, 'store/make_payment.html', {'code': code})

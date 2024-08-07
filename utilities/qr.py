@@ -1,8 +1,10 @@
 import cv2
+import os
 import qrcode
 from io import BytesIO
 from pyzbar import pyzbar
 import json
+from ExpressYourself.settings import BASE_DIR
 
 def generate_qr_code(data):
     qr = qrcode.QRCode(
@@ -15,8 +17,8 @@ def generate_qr_code(data):
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white")
     buffer = BytesIO()
-    img.save('test.png')
-    return img
+    img.save(buffer)
+    return buffer
 
 
 

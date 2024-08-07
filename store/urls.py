@@ -12,4 +12,5 @@ urlpatterns = [
     path('get_product_data/<int:product_id>/', order_views.get_product_data, name='get_product_data'),
     path('my_orders/', order_views.my_orders, name='my_orders'),
     path('order-details/', order_views.order_details, name='order-details'),
+    path('make-payment/<int:order_id>', order_views.make_payment, name='make_payment')
 ]

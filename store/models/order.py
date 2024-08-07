@@ -1,9 +1,11 @@
 from django.db import models
+from django.core.files import File
 from decimal import Decimal
 from users.models import CustomUser
 from .product import Product, Color, Size
 from django import forms
 from datetime import datetime
+from utilities.qr import generate_qr_code
 
 
 class Cart(models.Model):
@@ -20,12 +22,17 @@ class Order(models.Model):
     size = models.ForeignKey(Size, null=True, on_delete=models.SET_NULL)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     done = models.BooleanField(null=False, default=False)
+    qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
     cart = models.ForeignKey(Cart, limit_choices_to={'user': user}, null=True, blank=True, related_name='orders', on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         if self.product_id:
             price = Decimal(self.product.price) + (Decimal(0.02) * Decimal(str(self.product.price)))
             self.total_price = price
+        
+        buffer = generate_qr_code(self.id)
+
+        self.qr_code.save(f'{self.id}_qr.png', File(buffer), save=False)
 
         super(Order, self).save(*args, **kwargs)
         
