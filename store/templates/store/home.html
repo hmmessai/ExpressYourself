@@ -47,13 +47,14 @@ Express Yourself
         <div class="col-lg-12">
             <!-- Products -->
             <h1>Products available</h1><hr>
-                <div class="row row-cols-1 row-cols-lg-3 row-cols-sm-2 g-2" id="products">
+                <div class="row row-cols-2 row-cols-lg-4 row-cols-sm-2 g-2" id="products">
                     {% for product in products %}
                     <div class="col">
                             <a href="{% url 'order' product.id %}" style="text-decoration: none;">
                                 <div class="card" style="position: relative;">
                                     <div style="display: block; z-index: 100; position: absolute; top: 8px; right: 8px;">
-                                        <span class="btn btn-warning rounded-pill">ETB {{product.price}}</span>
+                                        {% load custom_filters %}
+                                        <span class="btn btn-warning rounded-pill">ETB {{product.price| to_int}}</span>
                                     </div>
                                     <img src="{{ product.picture.url }}" class="card-img-top" style="width: 100%; height: auto;" alt="{{ product.name }}">
                                     <hr class="card-hr">
@@ -62,10 +63,10 @@ Express Yourself
                                         {% load custom_filters %}
                                         <p class="card-text">{{ product.description| excerpt }}</p>
                                         <div class="row justify-content-center">
-                                            <div class="col-6">
+                                            <div class="col-6" style="width: 100%;">
                                                 <form method="post" action="{% url 'add_to_cart' product.id %}">
                                                     {% csrf_token %}
-                                                    <button class="btn btn-dark rounded-pill" type="submit"><i class="bi bi-cart bi-5x"></i> Add to Cart</button>
+                                                    <button class="btn btn-dark rounded-pill w-100" type="submit"><i class="bi bi-cart bi-5x"></i> Add to Cart</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -135,10 +136,10 @@ $(document).ready(function() {
                                                     <h5 class="card-title">${product.name}</h5>
                                                     <p class="card-text">${product.description.replace(/\n/g, '<br>')}</p>
                                                     <div class="row justify-content-center">
-                                                        <div class="col-6">
+                                                        <div class="col-6", style="width: 100%;">
                                                             <form method="post" action="/add-to-cart/${product.id}/">
                                                                 <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
-                                                                <button class="btn btn-dark rounded-pill" type="submit"><i class="bi bi-cart bi-4x"></i> Add to Cart</button>
+                                                                <button class="btn btn-dark w-100 rounded-pill" type="submit"><i class="bi bi-cart bi-4x"></i> Add to Cart</button>
                                                             </form>
                                                         </div>
                                                     </div>

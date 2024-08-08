@@ -25,22 +25,24 @@ class Order(models.Model):
     qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
     cart = models.ForeignKey(Cart, limit_choices_to={'user': user}, null=True, blank=True, related_name='orders', on_delete=models.CASCADE)
 
+    def __str__(self) -> str:
+        return f"{self.user}'s order for {self.product}"
+
     def save(self, *args, **kwargs):
         if self.product_id:
             price = Decimal(self.product.price) + (Decimal(0.02) * Decimal(str(self.product.price)))
             self.total_price = price
         
-        buffer = generate_qr_code(self.id)
+        buffer = generate_qr_code(self.__dict__)
 
-        self.qr_code.save(f'{self.id}_qr.png', File(buffer), save=False)
+        self.qr_code.save(f'{self}_qr.png', File(buffer), save=False)
 
         super(Order, self).save(*args, **kwargs)
         
         if not hasattr(self, 'payment'):
             Payment.objects.create(order=self)
 
-    def __str__(self) -> str:
-        return f"{self.user}'s order for {self.product}"
+    
 
 
 class OrderForm(forms.ModelForm):

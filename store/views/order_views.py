@@ -85,7 +85,6 @@ def make_payment(request, order_id):
         pass
     order = Order.objects.get(id=order_id)
 
-    print(order.qr_code)
-    code = decode_qr_code(order.qr_code)
+    code = order.qr_code.url
    
     return render(request, 'store/make_payment.html', {'code': code})

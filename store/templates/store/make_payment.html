@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
+{% block title %}
+Order Verification
+{% endblock %}
 {% block content %}
-<div class="container p-5">
+<div class="container text-center p-5">
+    <p >Give your phone to our representative to scan the code.</p>
     <img src="{{code}}" alt="Verification QR Code" height="50%" width="50%">
 </div>
 {% endblock %}
