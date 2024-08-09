@@ -13,7 +13,7 @@ Cart
                         <h3>No products in your cart</h3>
                     </div>
                     {% else %}
-                    <p class="text-center"> Choose the options to select color and size and click on the checkbox to checkout </p>
+                    <p class="text-center"> Choose the options to select color and size and checkout </p>
                     <ul class="list-group">
                     {% for order in cart.orders.all %}
                         
@@ -103,7 +103,7 @@ Cart
                         <select class="form-control" name="size" id="size"></select>
                     </div>
                     <div class="text-center">
-                        <button class="btn btn-success px-4" type="submit">Checkout</button>
+                        <button class="btn btn-success px-4" type="submit">Order</button>
                     </div>
                 </form>
             </div>
@@ -155,7 +155,7 @@ Cart
                         }));
                     });
 
-                    var actionUrl = "{% url 'checkout' 0 %}".replace('0', productId)
+                    var actionUrl = "{% url 'order' 0 %}".replace('0', productId)
 
                     // Set the form action
                     var modalForm = $('#modalForm');

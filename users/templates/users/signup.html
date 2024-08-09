@@ -6,8 +6,12 @@
     
     <div class="col-lg-6 mx-auto p-5">
         
-        <form class="form-control p-5" method="post" action="{% url 'signup' %}">
-            <h2 class="text-center mb-4">Signup</h2>
+        <form class="form-control px-5 pb-5" method="post" action="{% url 'signup' %}">
+            <h2 class="text-center pt-0">Signup</h2>
+            <p class="p-0 m-0 text-center h-25">to</p>
+            <div class="text-center mb-0 mt-0">
+                <img src="{{MEDIA_URL}}logo.png" style="max-height: 10%; width: 120px;" alt="Logo">
+            </div>
             {% csrf_token %}
             
                 <div class="form-floating mb-3">

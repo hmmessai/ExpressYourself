@@ -208,7 +208,7 @@
             </div>
           
             <div class="text-light">
-                <button class="navbar-toggler dropdown-toggler btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler dropdown-toggler btn btn-custom" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <i class="bi bi-list"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
@@ -258,7 +258,7 @@
 </header>
     <main>
         {% if messages %}
-        <div class="col-md-4 text-center mx-auto mt-2">
+        <div class="col-md-4 text-center mx-auto mt-2" style="width: 100%;">
                 {% for message in messages %}
                     <p class="alert alert-{{message.tags}} alert-dismissible fade show">{{ message }}</p>
                 {% endfor %}

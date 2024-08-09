@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.files import File
+from django.db.models.signals import pre_delete, post_save
+from django.dispatch import receiver
 from decimal import Decimal
 from users.models import CustomUser
 from .product import Product, Color, Size
@@ -16,14 +18,16 @@ class Cart(models.Model):
 
 
 class Order(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=False, related_name='order_user')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=False, related_name='order_product')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=False, related_name='orders')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=False, related_name='orders')
     color = models.ForeignKey(Color, null=True, on_delete=models.SET_NULL)
     size = models.ForeignKey(Size, null=True, on_delete=models.SET_NULL)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     done = models.BooleanField(null=False, default=False)
     qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
     cart = models.ForeignKey(Cart, limit_choices_to={'user': user}, null=True, blank=True, related_name='orders', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    delivered_at = models.DateTimeField(null=True)
 
     def __str__(self) -> str:
         return f"{self.user}'s order for {self.product}"
@@ -89,3 +93,20 @@ class Payment(models.Model):
     def __str__(self) -> str:
         return f"Payment for {self.order}"
 
+
+@receiver(post_save, sender=Order)
+def update_order_count(sender, instance, **kwargs):
+    if instance.pk:
+        product = instance.product
+        if instance.done:
+            product.order_count -=1
+        else:
+            product.order_count += 1
+        product.save()
+
+@receiver(pre_delete, sender=Order)
+def decrease_order_count_on_deletion(sender, instance, **kwargs):
+    if not instance.done:
+        if instance.product.order_count > 0:
+            instance.product.order_count -= 1
+            instance.product.save()

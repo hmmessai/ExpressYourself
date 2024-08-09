@@ -10,7 +10,7 @@ Express Yourself
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="catNav">
             <div class="d-flex flex-column flex-lg-row align-items-start">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0 bg-body-secondary">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'my_orders' %}">My Orders</a>
                     </li>
@@ -24,7 +24,7 @@ Express Yourself
                         {% if not categories %}
                                <a href="#">No Categories</a>
                         {% else %}
-                        <ul class="dropdown-menu dropdown-menu-end overflow-auto" style="height: 30vh;" id="categories">
+                        <ul class="dropdown-menu dropdown-menu-end overflow-auto bg-body-secondary" style="height: 30vh;" id="categories">
                             
                             {% for category in categories %}
                                 <li>

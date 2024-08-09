@@ -13,7 +13,8 @@ class CategoryAdmin(admin.ModelAdmin):
     inlines = [ProductInline]
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'category')
+    list_display = ('name', 'category', 'order_count')
+    fields = ('name', 'description', 'price', 'category', 'available_colors', 'rating', 'size', 'picture', 'status', 'posted_by')
 
 class OrderAdmin(admin.ModelAdmin):
     form = OrderForm

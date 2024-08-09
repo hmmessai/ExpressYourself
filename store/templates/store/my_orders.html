@@ -11,18 +11,25 @@ My Orders
             <h3 class="text-center">You have made no orders.</h3>
             {% else %}
             {% for order in orders %}
-                <a href="{% url 'make_payment' order.id %}">
+                <a href="{% url 'make_payment' order.id %}" style="text-decoration: none;">
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{order.product}}
-                          {% if order.done %}
-                              <span class="badge text-bg-success rounded-pill">
-                                  Done
-                              </span>
-                          {% else %}
-                              <span class="badge text-bg-danger rounded-pill">
-                                  Not Done
-                              </span>
-                          {% endif %}
+                        <div class="flex-fill text-center">
+                            {{order.product}}
+                        </div>
+                        <div class="flex-fill text-center">
+                            {{order.created_at}}
+                        </div>
+                        <div class="flex-fill text-center">
+                            {% if order.done %}
+                                <span class="badge text-bg-success rounded-pill">
+                                    Done
+                                </span>
+                            {% else %}
+                                <span class="badge text-bg-danger rounded-pill">
+                                    Not Done
+                                </span>
+                            {% endif %}
+                        </div>
                       </li>
                 </a>
             {% endfor %}
