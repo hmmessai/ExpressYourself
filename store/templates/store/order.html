@@ -33,9 +33,9 @@ Order
             <div class="row justify-content-center bg-light">
                 <form class="col-9 text-center" method="POST" action="{% url 'order' product.id %}">
                     {% csrf_token %}
-                    <div class="form-group p-3 d-flex flex-row justify-content-around">
+                    <div class="form-group p-3 d-flex flex-wrap flex-row justify-content-around">
                         <label class="mx-3" for="size-options">Color: </label>
-                        <div class="size-options">
+                        <div class="size-options d-flex flex-wrap">
                             {% for color in product.available_colors.all %}
                                 <input type="radio" id="size-{{color.name}}" name="color" value="{{color}}">
                                 <label for="size-{{color.name}}" style="background-color: {{color.hex_value}}; padding: 15px 25px 15px;"></label>
@@ -43,9 +43,9 @@ Order
                         </div>
                     </div>
                     <hr>
-                    <div class="form-group p-3 d-flex flex-row justify-content-around">
+                    <div class="form-group p-3 d-flex flex-row flex-wrap justify-content-around">
                         <label class="mx-3" for="size-options">Size: </label>
-                        <div class="size-options">
+                        <div class="size-options d-flex flex-wrap">
                             {% for size in product.size.all %}
                                 <input type="radio" id="size-{{size.short_letter}}" name="size" value="{{size}}">
                                 <label for="size-{{size.short_letter}}">{{size.short_letter}}</label>
@@ -72,7 +72,7 @@ Order
         <div class="row p-5">
             <h1>Related Products</h1>
             <hr>
-            <div class="row row-cols-2 row-cols-lg-3 row-cols-sm-2 g-2" id="products">
+            <div class="row row-cols-1 row-cols-lg-3 row-cols-sm-2 g-2" id="products">
                 {% for p in products %}
                 {% if p != product %}
                 <div class="col">

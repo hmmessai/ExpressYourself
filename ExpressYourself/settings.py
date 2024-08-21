@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'store',
     'users',
     'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework.authtoken',
     'corsheaders',
     'utilities',
 ]
@@ -161,3 +163,20 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost',
     'http://198.168.0.48',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=50),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+}

@@ -5,21 +5,21 @@ My Orders
 {% block content %}
 <div class="container p-5 mb-5" style="height: 80vh;">
     <h1 class="pb-3 text-center">My Orders</h1>
-    <div class="form-control h-100 overflow-auto">
+    <div class="form-control h-100 overflow-auto hide-scrollbar">
         <ul class="list-group">
             {% if not orders %}
             <h3 class="text-center">You have made no orders.</h3>
             {% else %}
             {% for order in orders %}
                 <a href="{% url 'make_payment' order.id %}" style="text-decoration: none;">
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <div class="flex-fill text-center">
+                    <li class="list-group-item btn btn-light d-flex justify-content-between align-items-center">
+                        <div class="flex-start text-center">
                             {{order.product}}
                         </div>
-                        <div class="flex-fill text-center">
+                        <div class="justify-self-start">
                             {{order.created_at}}
                         </div>
-                        <div class="flex-fill text-center">
+                        <div class="flex-end text-center">
                             {% if order.done %}
                                 <span class="badge text-bg-success rounded-pill">
                                     Done

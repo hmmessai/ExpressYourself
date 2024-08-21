@@ -3,7 +3,7 @@
 Express Yourself
 {% endblock %}
 {% block content %}
-<nav style="height: 50px;" class="navbar navbar-expand-lg bg-body-secondary sticky-top">
+<nav style="height: 60px; z-index: 160;" class="navbar navbar-expand-lg bg-body-secondary sticky-top">
     <div class="container-fluid">
         <button class="navbar-toggler btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#catNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <i class="bi bi-list"></i>
@@ -25,7 +25,9 @@ Express Yourself
                                <a href="#">No Categories</a>
                         {% else %}
                         <ul class="dropdown-menu dropdown-menu-end overflow-auto bg-body-secondary" style="height: 30vh;" id="categories">
-                            
+                            <li>
+                                <a class="dropdown-item" data-category_id="0" href="#"> All </a>
+                            </li>
                             {% for category in categories %}
                                 <li>
                                     <a class="dropdown-item" data-category_id="{{ category.id }}" href="#">

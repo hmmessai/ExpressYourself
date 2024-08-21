@@ -26,6 +26,7 @@ class Order(models.Model):
     done = models.BooleanField(null=False, default=False)
     qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
     cart = models.ForeignKey(Cart, limit_choices_to={'user': user}, null=True, blank=True, related_name='orders', on_delete=models.CASCADE)
+    status = models.CharField(max_length=20, default='unpaid', null=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     delivered_at = models.DateTimeField(null=True)
 

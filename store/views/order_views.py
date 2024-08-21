@@ -6,7 +6,7 @@ from store.models.order import Order, Cart
 from utilities.qr import generate_qr_code, decode_qr_code
 
 
-def order(request, product_id):
+def order(request, product_id, cart=None):
     product = Product.objects.get(id=product_id)
     user = request.user
     products = Product.objects.filter(category=product.category, status='available')
@@ -19,7 +19,13 @@ def order(request, product_id):
             size = Size.objects.get(name=size_name)
 
             order = Order.objects.create(user=user, product=product, color=color, size=size)
-            return redirect('home')
+            if cart and not user.cart.orders.filter(product=product).exists():
+                print(cart)
+                print(user.cart)
+                order.cart = user.cart
+
+            order.save()
+            return redirect('payment', order.id)
         except Exception as e:
              print(e)
              return render(request, 'store/order.html', {'product': product, 'products': products, 'messages': ["Select color and size before ordering."]})
@@ -74,7 +80,8 @@ def get_product_data(request, product_id):
 def my_orders(request):
     if request.user:
         user = request.user
-        orders = Order.objects.filter(user=user, cart=None)
+        orders = Order.objects.filter(user=user, cart=None, status='paid')
+        print(orders)
     return render(request, 'store/my_orders.html', {'orders': orders})
 
 def order_details(request):
@@ -89,3 +96,21 @@ def make_payment(request, order_id):
     code = order.qr_code.url
    
     return render(request, 'store/make_payment.html', {'code': code})
+
+
+def payment(request, order_id):
+    order = Order.objects.get(id=order_id)
+    user = request.user
+    if request.method == 'POST':
+        print(order)
+        order.status = 'paid'
+        if order.cart:
+            for orders in user.cart.orders.all():
+                if order == orders:
+                    print(order)
+        order.save()
+        return redirect('home')
+    payment = order.payment
+    return render(request, 'store/payment.html', {'payment': payment})
+
+    

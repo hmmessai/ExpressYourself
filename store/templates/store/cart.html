@@ -155,7 +155,7 @@ Cart
                         }));
                     });
 
-                    var actionUrl = "{% url 'order' 0 %}".replace('0', productId)
+                    var actionUrl = "{% url 'order_for_cart' 0  'True' %}".replace('0', productId)
 
                     // Set the form action
                     var modalForm = $('#modalForm');

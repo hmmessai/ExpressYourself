@@ -25,13 +25,19 @@
       <div class="form-floating mb-3">
           {{ form.password }}
           <label for="{{ form.password.id_for_label }}">Password</label>
+          <button type="button" onclick="togglePassword('id_password')" class="btn btn-secondary btn-sm" style="position: absolute; top: 25%; right: 5%; background: none; border: none;"><i class="bi bi-eye-fill fs-5"></i></button>
           {% if form.password.errors %}
               <div class="error mb-2 text-danger mx-4">
                   {{ form.password.errors.0 }}
               </div>
           {% endif %}
       </div>
-      <div class="form-floating text-center">
+      <div class="text-center p-2">
+        <a href="{% url 'signup' %}">
+          Don't have an account? Sign up.
+        </a>
+      </div>
+      <div class="form-floating text-center mt-2">
         <button type='submit' class="btn btn-dark px-5">Log in</button>
       </div>
     </div>
@@ -60,4 +66,22 @@
         </div> -->
         
     
+{% endblock %}
+
+{% block scripts %}
+<script>
+  function togglePassword(fieldId) {
+    var passwordField = document.getElementById(fieldId);
+    var button = document.querySelector(`[onclick="togglePassword('${fieldId}')"]`);
+    
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        button.innerHTML = '<i class="bi bi-eye-slash-fill fs-5"></i>';
+    } else {
+        passwordField.type = "password";
+        button.innerHTML = '<i class="bi bi-eye-fill fs-5"></i>';
+    }
+  }
+</script>
+
 {% endblock %}
