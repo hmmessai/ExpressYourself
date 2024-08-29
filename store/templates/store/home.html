@@ -5,6 +5,16 @@ Express Yourself
 {% block content %}
 <nav style="height: 60px; z-index: 160;" class="navbar navbar-expand-lg bg-body-secondary sticky-top">
     <div class="container-fluid">
+        <div class="row px-5 w-75">
+            <div class="col-12 px-5">
+                <div class="d-flex justify-content-between align-items-start g-5 overflow-auto hide-scrollbar flex-nowrap" id="categories">
+                    <a class="btn btn-light item me-2 btn-no-wrap rounded-pill" data-category_id="0" href="#"> All </a>
+                    {% for category in categories %}
+                        <a class="btn btn-light item me-2 btn-no-wrap rounded-pill" data-category_id="{{ category.id }}" href="#">{{ category.name }}</a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
         <button class="navbar-toggler btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#catNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <i class="bi bi-list"></i>
         </button>
@@ -15,28 +25,7 @@ Express Yourself
                         <a class="nav-link" href="{% url 'my_orders' %}">My Orders</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Top Picks</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                          Categories
-                        </a>
-                        {% if not categories %}
-                               <a href="#">No Categories</a>
-                        {% else %}
-                        <ul class="dropdown-menu dropdown-menu-end overflow-auto bg-body-secondary" style="height: 30vh;" id="categories">
-                            <li>
-                                <a class="dropdown-item" data-category_id="0" href="#"> All </a>
-                            </li>
-                            {% for category in categories %}
-                                <li>
-                                    <a class="dropdown-item" data-category_id="{{ category.id }}" href="#">
-                                        {{ category.name }}
-                                    </a>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                        {% endif %}
+                        <a class="nav-link" id="toppicks" href="#">Top Picks</a>
                     </li>
                 </ul>
                 </div>
@@ -44,6 +33,7 @@ Express Yourself
         </div>
     </div>
 </nav>
+
 <div class="container" style="height: auto;">
     <div class="row p-2 h-100 overflow-auto hide-scrollbar">
         <div class="col-lg-12">
@@ -53,18 +43,18 @@ Express Yourself
                     {% for product in products %}
                     <div class="col">
                             <a href="{% url 'order' product.id %}" style="text-decoration: none;">
-                                <div class="card" style="position: relative;">
-                                    <div style="display: block; z-index: 100; position: absolute; top: 8px; right: 8px;">
-                                        {% load custom_filters %}
-                                        <span class="btn btn-warning rounded-pill">ETB {{product.price| to_int}}</span>
-                                    </div>
+                                <div class="card">
+                                    
                                     <img src="{{ product.picture.url }}" class="card-img-top" style="width: 100%; height: auto;" alt="{{ product.name }}">
                                     <hr class="card-hr">
                                     <div class="card-body">
+                                        <div style="display: block;">
+                                            {% load custom_filters %}
+                                            <span class="btn btn-success rounded-pill">ETB {{product.price| to_int}}</span>
+                                        </div>
                                         <h5 class="card-title">{{ product.name }}</h5>
                                         {% load custom_filters %}
-                                        <p class="card-text">{{ product.description| excerpt }}</p>
-                                        <div class="row justify-content-center">
+                                        <div class="row justify-content-center pt-3">
                                             <div class="col-6" style="width: 100%;">
                                                 <form method="post" action="{% url 'add_to_cart' product.id %}">
                                                     {% csrf_token %}
@@ -128,16 +118,15 @@ $(document).ready(function() {
                                 const productHtml = `
                                     <div class="col">
                                         <a href="/order/${product.id}" style="text-decoration: none;">
-                                            <div class="card" style="position: relative;">
-                                                <div style="display: block; z-index: 100; position: absolute; top: 8px; right: 8px;">
-                                                    <span class="btn btn-warning rounded-pill">ETB ${product.price}</span>
-                                                </div>
+                                            <div class="card">
                                                 <img src="${product.picture}" class="card-img-top" style="width: 100%; height: auto;" alt="${product.name}">
                                                 <hr class="card-hr">
-                                                <div class="card-body">
+                                                <div class="card-body" style="position: relative;">
+                                                    <div style="display: block; z-index: 100; position: absolute; top: 8px; right: 8px;">
+                                                        <span class="btn btn-success rounded-pill">ETB ${product.price}</span>
+                                                    </div>
                                                     <h5 class="card-title">${product.name}</h5>
-                                                    <p class="card-text">${product.description.replace(/\n/g, '<br>')}</p>
-                                                    <div class="row justify-content-center">
+                                                    <div class="row justify-content-center pt-3">
                                                         <div class="col-6", style="width: 100%;">
                                                             <form method="post" action="/add-to-cart/${product.id}/">
                                                                 <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
@@ -161,6 +150,54 @@ $(document).ready(function() {
                 })
             })
         })
+
+        $('#toppicks').click(function(event) {
+                event.preventDefault();
+
+                $.ajax({
+                    url: `${window.location.origin}/filter_by_rating/`,
+                    method: 'GET',
+                    success: function(response) {
+                            products.empty();
+                            response.products.forEach(function(product) {
+                                const csrf_token = getCookie('csrftoken');
+                                const product_url = "{% url 'signup' %}";
+                                console.log('Success');
+                                console.log(product.description.replace(/\n/g, '<br>'));
+                                const productHtml = `
+                                    <div class="col">
+                                        <a href="/order/${product.id}" style="text-decoration: none;">
+                                            <div class="card">
+                                                <img src="${product.picture}" class="card-img-top" style="width: 100%; height: auto;" alt="${product.name}">
+                                                <hr class="card-hr">
+                                                <div class="card-body" style="position: relative;">
+                                                    <div style="display: block; z-index: 100; position: absolute; top: 8px; right: 8px;">
+                                                        <span class="btn btn-success rounded-pill">ETB ${product.price}</span>
+                                                    </div>
+                                                    <h5 class="card-title">${product.name}</h5>
+                                                    <div class="row justify-content-center pt-3">
+                                                        <div class="col-6", style="width: 100%;">
+                                                            <form method="post" action="/add-to-cart/${product.id}/">
+                                                                <input type="hidden" name="csrfmiddlewaretoken" value="${ csrf_token }">
+                                                                <button class="btn btn-dark w-100 rounded-pill" type="submit"><i class="bi bi-cart bi-4x"></i> Add to Cart</button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>`;
+                                        
+                                products.append(productHtml);
+                            });
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX Error:', status, error);
+                            products.html('An error occurred while loading products.');
+                        }
+
+                })
+            })
 
         $('#orderModal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget); // Button that triggered the modal

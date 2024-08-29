@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
+{% block title %}
+Payment
+{% endblock %}
 {% block content %}
-<div class="container p-5" style="height: 80vh; width: 80vw;">
+<div class="container p-5 mb-5" style="height: auto; width: 80vw;">
     <h1 class="text-center pb-3">Make Payment</h1>
     <div class="form-control d-flex flex-column g-2 h-100 h-md-75 w-100 w-md-75">
-        <div class="text-center p-5">
+        <div class="text-center pt-2 pb-5">
             <h3>{{ payment }}</h3>
         </div>
         <div class="text-center btn btn-light d-flex flex-row flex-wrap justify-content-between">
@@ -12,18 +15,18 @@
         </div>
         <div class="text-center btn btn-light d-flex flex-row flex-wrap justify-content-between">
             <p><b>Product price:</b> </p>
-            <p>ETB {{ payment.order.product.price }}</p>
+            <p>ETB {{ payment.product_price }}</p>
         </div>
         <div class="text-center btn btn-light d-flex flex-row flex-wrap justify-content-between">
             {% load custom_filters %}
             <p><b>Delivery cost:</b></p>
-            <p>ETB {{ payment.order.total_price|subtract:payment.order.product.price }}</p> 
+            <p>ETB {{ payment.delivery_price }}</p> 
         </div>
         <div class="text-center btn btn-light d-flex flex-row flex-wrap justify-content-between">
             <p><b>Total price:</b> </p>
-            <p class="align-self-end"> ETB {{ payment.order.total_price }}</p> 
+            <p class="align-self-end"> ETB {{ payment.total_price }}</p>
         </div>
-        <form class="p-4 text-center" method="post" action="{% url 'payment' payment.order.id %}">
+        <form class="p-4 text-center" method="post" action="{% url 'payment_with_id' payment_id=payment.id %}">
             {% csrf_token %}
             <button class="btn btn-dark" style="width: fit-content;"> Pay and Order</button>
         </form>

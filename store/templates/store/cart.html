@@ -3,60 +3,100 @@
 Cart
 {% endblock %}
 {% block content %}
-<div class="container p-5 mb-5" style="height: 80vh;">
+<div class="container-fluid p-5 mb-5" style="height: auto;">
     <h1 class="text-center pb-3">Orders in Cart</h1>
-    <div class="form-control h-100 overflow-auto">
-            <div class="col-md-5 mx-auto">
-                <div class="accordion accordion-flush" id="accordionFlushExample">
-                    {% if not cart.orders.all %}
-                    <div class="text-center">
+    <div class="form-control">
+            <div class="col-md-12 mx-auto">
+                    {% if not cart.product.all %}
+                    <div class="text-center p-5">
                         <h3>No products in your cart</h3>
                     </div>
                     {% else %}
                     <p class="text-center"> Choose the options to select color and size and checkout </p>
-                    <ul class="list-group">
-                    {% for order in cart.orders.all %}
-                        
-                            <li class="list-group-item">
-                                <a href="#" class="btn btn-custom w-100" data-bs-toggle="modal" data-bs-target="#orderModal" data-product_id="{{order.product.id}}">
-                                    <div>
-                                        {{order.product}}
+                    <form method="post" id="mainForm" action="{% url 'checkout' %}">
+                    {% for product in cart.product.all %}
+                        <div class="row p-5">
+                            <input type="checkbox" class="form-check-input me-2 col-md-1 align-items-center" id="checkbox{{ product.id }}" name="items" value="{{ product.id }}" >
+                            <div class="col-md-4">
+                                <img src="{{ product.picture.url }}" style="width: 100%; height: auto;" alt="{{ product.name }}">
+                            </div>
+                            <div class="col-md-3">
+                                <div>
+                                    {% load custom_filters %}
+                                    <span class="btn btn-success rounded-pill">ETB {{ product.price| to_int}}</span>
+                                </div>
+                                <h5 class="card-title pb-3 pt-2">{{ product.name }}</h5>
+                                <p>{{ product.description }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <!-- <form class="col-9 text-center" method="POST" action="{% url 'order'  product.id %}"> -->
+                                    {% csrf_token %}
+                                    <div class="form-group p-3 d-flex flex-wrap flex-row justify-content-around">
+                                        <label class="mx-3" for="size-options">Color: </label>
+                                        <div class="size-options d-flex flex-wrap" id="color-select">
+                                            {% for color in product.available_colors.all %}
+                                                <input type="radio" id="size-{{color.name}}-{{ product.id}}" name="{{product.id}}-color" value="{{color.id}}">
+                                                <label for="size-{{color.name}}-{{ product.id}}" style="background-color: {{color.hex_value}}; padding: 15px 25px 15px;"></label>
+                                            {% endfor %}
+                                
+                                        </div>
                                     </div>
-                                </a>
-                            </li>
+                                    <hr>
+                                    <div class="form-group p-3 d-flex flex-row flex-wrap justify-content-around">
+                                        <label class="mx-3" for="size-options">Size: </label>
+                                        <div class="size-options d-flex flex-wrap" id="size-select">
+                                            {% for size in product.size.all %}
+                                                <input type="radio" id="size-{{size.short_letter}}-{{ product.id}}" name="{{product.id}}-size" value="{{size.id}}">
+                                                <label for="size-{{size.short_letter}}-{{ product.id}}">{{size.short_letter}}</label>
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <!-- <div class="row mt-2 mb-3 justify-content-center">
+                                        <div class="col-12 text-center">
+                                            <button class="btn btn-dark rounded-pill w-50 w-md-25" type="submit" /button>
+                                        </div>
+                                    </div>
+                                </form> -->
+                            </div>
+                        </div>
+                        <hr>
+                            
+                        
+                            
                        
                         
                         <!-- <div class="accordion-item p-3">
                             <div class="accordion-header">
-                                <input type="checkbox" class="form-check-input me-2 col-2 align-items-center" id="checkbox{{ forloop.counter }}" name="items" value="{{order.id}}">
+                                <input type="checkbox" class="form-check-input me-2 col-2 align-items-center" id="checkbox{{ forloop.counter }}" name="items" value="{ id}}">
                                 <label for="checkbox{{ forloop.counter }}" class="form-check-label col-10">
                                     <button class="accordion-button collapsed col-12" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ forloop.counter }}" aria-expanded="false" aria-controls="flush-collapse{{ forloop.counter }}">
-                                        {{ order.product }}
+                                        {{ product }}
                                     </button>
                                 </label>
                             </div>
                             <div id="flush-collapse{{ forloop.counter }}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
                                 <div class="accordion-body">
                                     <div class="text-center">
-                                        {{ order.product.description }}
+                                        {{ product.description }}
                                     </div>
                                     <form id="insideForm" method="post" action="">
                                         <div class="form-group mb-3">
                                             <label for="productName" >Product</label>
-                                            <input type="text" class="form-control" id="productName" name="productName" value="{{ order.product }}" readonly>
+                                            <input type="text" class="form-control" id="productName" name="productName" value="{{ product }}" readonly>
                                         </div>
                                         <div class="form-group mb-3">
                                             <label for="productName" >Color </label>
-                                            <select class="form-control" name="{{order.product.id}}_color" id="color">
-                                                {% for color in order.product.available_colors.all %}
+                                            <select class="form-control" name="{ product.id}}_color" id="color">
+                                                {% for color in product.available_colors.all %}
                                                     <option value="{{color.id}}">{{color.name}}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
                                         <div class="form-group mb-3">
                                             <label for="productName" >Size </label>
-                                            <select class="form-control" name="{{order.product.id}}_size" id="size">
-                                                {% for size in order.product.size.all %}
+                                            <select class="form-control" name="{ product.id}}_size" id="size">
+                                                {% for size in product.size.all %}
                                                     <option value="{{size.id}}">{{size.name}}</option>
                                                 {% endfor %}
                                             </select>
@@ -67,15 +107,18 @@ Cart
                             </div>
                         </div> -->
                     {% endfor %}
-                </ul>
-                    {% endif %}
-                </div>
+                    <div class=" text-center p-3">
+                        <button type="submit" class="btn btn-dark">Checkout</button>
+                    </div>
+                </form>
+                {% endif %}
             </div>
+
     </div>
 </div>
 
 
-<!-- Order Popup -->
+<!-- Popup -->
 <div class="modal fade" id="orderModal" tabindex="-1" role="dialog" aria-labelledby="orderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -110,6 +153,7 @@ Cart
         </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block scripts %}
@@ -166,7 +210,20 @@ Cart
                 }
             });
         });
-    })
+
+        $('#mainForm').change(function(){
+            const products = JSON.parse('{{ cart_json|safe }}');
+
+            products.forEach(function(product) {
+                if ($('input[name="' + product.id + '-size"]:checked').length > 0 && $('input[name="' + product.id + '-color"]:checked').length > 0) {
+                    console.log('checked' + product.id);
+                    $('#checkbox' + product.id).prop('checked', true);
+                }
+            
+        })
+        })
+
+})
 
 </script>
 

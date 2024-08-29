@@ -1,11 +1,13 @@
+import json
 from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.contrib import messages
 from store.models.product import Product, Color, Size
-from store.models.order import Order, Cart
+from store.models.order import Order, Cart, Payment
 from utilities.qr import generate_qr_code, decode_qr_code
 
-
+@login_required
 def order(request, product_id, cart=None):
     product = Product.objects.get(id=product_id)
     user = request.user
@@ -23,51 +25,92 @@ def order(request, product_id, cart=None):
                 print(cart)
                 print(user.cart)
                 order.cart = user.cart
-
+            payment = Payment.objects.create()
+            payment.orders.add(order)
+            payment.save()
             order.save()
-            return redirect('payment', order.id)
+            return redirect('payment_with_order', order_id=order.id)
         except Exception as e:
              print(e)
              return render(request, 'store/order.html', {'product': product, 'products': products, 'messages': ["Select color and size before ordering."]})
 
     return render(request, 'store/order.html', {'product': product, 'products': products})
 
-
+@login_required
 def add_to_cart(request, product_id):
     product = Product.objects.get(id=product_id)
     user = request.user
     if request.method == 'POST':
         try:
             cart, created = Cart.objects.get_or_create(user=user)
-            if cart.orders.filter(product=product).exists():
+            if cart.product.filter(id=product_id).exists():
                 raise Exception("Order already added to cart")
-            order = Order.objects.create(user=user, product=product)
-            cart.orders.add(order)
+            cart.product.add(product)
             messages.success(request, f"Successfully added to cart")
         except Exception as e:
             messages.error(request, f"Error Occured: {e}")
         return redirect('home')
     return redirect('home')
 
+@login_required
 def view_cart(request):
     user = request.user
 
     cart = get_object_or_404(Cart, user=user)
+    products_list = []
+    products = cart.product.all()
+    for product in products:
+        data = {
+            'name': product.name,
+            'id': product.id,
+            'description': product.description,
+            'picture': product.picture.url,
+            'price': int(product.price),
+            }
+        products_list.append(data)
 
-    return render(request, 'store/cart.html', {'cart': cart})
+    cart_json = json.dumps(products_list)
 
-def checkout(request, order_id):
+
+    return render(request, 'store/cart.html', {'cart': cart, 'cart_json': cart_json})
+
+@login_required
+def checkout(request):
     if request.method == 'POST':
         selected_orders = request.POST.getlist('items')
-        orders = []
+        products = []
         user = request.user
-        order = Order.objects.get(id=order_id)
+        advance = 0
+        total_price = 0
+        print(selected_orders)
+        payment = Payment.objects.create()
+        for i in selected_orders:
+            product = Product.objects.get(id=i)
+            products.append(product)
+            color = Color.objects.get(id=request.POST.get(f'{product.id}-color'))
+            size = Size.objects.get(id=request.POST.get(f'{product.id}-size'))
+            order = Order.objects.create(
+                product=product,
+                user=request.user,
+                color=color,
+                size=size,
+                cart=request.user.cart)
+            order.save()
+            payment.orders.add(order)
+            payment.save()
+        for product in products:
+            user.cart.product.remove(product)
+        return redirect('payment_with_id', payment_id=payment.id)
+        advance += order.payment.advance
+        total_price += order.total_price
+        print(advance)
+        print(advance)
+        print(total_price)
 
-        print(order)
-
-        user.cart.orders.remove(order)
+        
         return redirect('view_cart')
 
+@login_required
 def get_product_data(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     product_data = {
@@ -77,6 +120,7 @@ def get_product_data(request, product_id):
     }
     return JsonResponse(product_data)
 
+@login_required
 def my_orders(request):
     if request.user:
         user = request.user
@@ -84,10 +128,13 @@ def my_orders(request):
         print(orders)
     return render(request, 'store/my_orders.html', {'orders': orders})
 
+@login_required
 def order_details(request):
     if request.method == 'POST':
         generate_qr_code(request.order)
 
+
+@login_required
 def make_payment(request, order_id):
     if request.method == 'POST':
         pass
@@ -98,19 +145,39 @@ def make_payment(request, order_id):
     return render(request, 'store/make_payment.html', {'code': code})
 
 
+@login_required
 def payment(request, order_id):
+    print('inside order payment')
     order = Order.objects.get(id=order_id)
     user = request.user
     if request.method == 'POST':
         print(order)
         order.status = 'paid'
+        payment = Payment.objects.create()
         if order.cart:
             for orders in user.cart.orders.all():
+                payment.orders.add(orders)
                 if order == orders:
                     print(order)
         order.save()
         return redirect('home')
     payment = order.payment
+    print("Payment with order", payment)
     return render(request, 'store/payment.html', {'payment': payment})
 
+@login_required
+def payment_with_id(request, payment_id):
+    print(payment_id)
+    if request.method == 'POST':
+        if payment_id:
+            payment = Payment.objects.get(id=payment_id)
+            for order in payment.orders.all():
+                order.status = 'paid'
+                order.save()
+        return redirect('home')
+    if payment_id:
+        payment = Payment.objects.get(id=payment_id)
+        print('dict')
+        print(payment)
+        return render(request, 'store/payment.html', {'payment': payment})
     

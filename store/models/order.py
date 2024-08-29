@@ -12,10 +12,44 @@ from utilities.qr import generate_qr_code
 
 class Cart(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, null=True, related_name='cart')
+    product = models.ManyToManyField(Product, blank=True)
     
     def __str__(self) -> str:
         return f"{self.user.first_name}'s Cart"
+    
 
+class Payment(models.Model):
+    advance = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    status = models.CharField(max_length=20, null=False, default='not done')
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    delivery_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    product_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+
+    def save(self, *args, **kwargs):
+        if self.orders and self.id:
+            self.advance = Decimal('0.00')
+            self.product_price = Decimal('0.00')
+            self.delivery_price = Decimal('0.00')
+            self.total_price = Decimal('0.00')
+            print(self.orders.all())
+            for order in self.orders.all():
+                advance_payment = Decimal(0.5) * Decimal(order.total_price)
+                self.product_price += Decimal(order.product.price)
+                self.total_price += Decimal(order.total_price)
+                self.advance += advance_payment
+                print(self.product_price)
+            self.delivery_price = self.total_price - self.product_price
+
+        super(Payment, self).save(*args, **kwargs)
+
+    def payAdvance(self):
+        pass
+
+    def payInFull(self):
+        pass
+
+    def payRemainder(self):
+        pass
 
 class Order(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=False, related_name='orders')
@@ -24,6 +58,7 @@ class Order(models.Model):
     size = models.ForeignKey(Size, null=True, on_delete=models.SET_NULL)
     total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     done = models.BooleanField(null=False, default=False)
+    payment = models.ForeignKey(Payment, on_delete=models.CASCADE, null=True, related_name='orders')
     qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
     cart = models.ForeignKey(Cart, limit_choices_to={'user': user}, null=True, blank=True, related_name='orders', on_delete=models.CASCADE)
     status = models.CharField(max_length=20, default='unpaid', null=False)
@@ -44,8 +79,8 @@ class Order(models.Model):
 
         super(Order, self).save(*args, **kwargs)
         
-        if not hasattr(self, 'payment'):
-            Payment.objects.create(order=self)
+        # if not hasattr(self, 'payment'):
+        #     Payment.objects.create(order=self)
 
     
 
@@ -69,26 +104,7 @@ class OrderForm(forms.ModelForm):
             self.fields['size'].queryset = self.instance.product.size.all()
 
 
-class Payment(models.Model):
-    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='payment')
-    advance = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    status = models.CharField(max_length=20, null=False, default='not done')
 
-    def save(self, *args, **kwargs):
-        if self.order_id:
-            advance_payment = Decimal(0.5) * Decimal(self.order.total_price)
-            self.advance = advance_payment
-
-        super(Payment, self).save(*args, **kwargs)
-
-    def payAdvance(self):
-        pass
-
-    def payInFull(self):
-        pass
-
-    def payRemainder(self):
-        pass
         
 
     def __str__(self) -> str:

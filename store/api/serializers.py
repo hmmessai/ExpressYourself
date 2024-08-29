@@ -47,3 +47,17 @@ class ProductSerializer(serializers.ModelSerializer):
         representation['category'] = {'id': category.id, 'name': category.name}
 
         return representation
+    
+
+class OrderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        user = instance.user
+        representation['user'] = {'id': user.id, 'name': user.name}
+
+        return representation
