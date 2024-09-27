@@ -54,6 +54,11 @@ def add_to_cart(request, product_id):
 
 @login_required
 def view_cart(request):
+    """
+    * Handles request to the view-cart path
+    * Arguments: no arguments needed it will take all the data from the request made
+    * Returns: Render object with a reference to cart.html document
+    """
     user = request.user
 
     cart = get_object_or_404(Cart, user=user)
@@ -76,6 +81,13 @@ def view_cart(request):
 
 @login_required
 def checkout(request):
+    """
+    * Handles post requests to the checkout path
+       - Creates order for every checked out product
+       - Create a payment and add all the orders to the payment and generate a finished payment
+    * Arguemts: no arguments it will take the data from the request made
+    * Returns: redirect object to the payment_with_id path by linking the payment_id we just created
+    """
     if request.method == 'POST':
         selected_orders = request.POST.getlist('items')
         products = []
@@ -112,6 +124,12 @@ def checkout(request):
 
 @login_required
 def get_product_data(request, product_id):
+    """
+    * Handles requests made to the get_product_data path
+        - Used for the javascript request that will be made from the frontend
+    * Arguments: @product_id - the id of the product we want to get the data of.
+    * Return: JsonResponse object(json representation with all the needed info about the product) of the product with the given product_id.
+    """
     product = get_object_or_404(Product, id=product_id)
     product_data = {
         'name': product.name,
@@ -122,10 +140,15 @@ def get_product_data(request, product_id):
 
 @login_required
 def my_orders(request):
+    """
+    * Handles requests made to the my_orders path
+        - Checks the users exsistance and get orders related to the user.
+    * Arguments: no arguments it will take all that it needs from the request data.
+    * Return: Render object referencing the my_orders.html document sending the orders filtered with it.
+    """
     if request.user:
         user = request.user
         orders = Order.objects.filter(user=user, cart=None, status='paid')
-        print(orders)
     return render(request, 'store/my_orders.html', {'orders': orders})
 
 @login_required
@@ -154,6 +177,7 @@ def payment(request, order_id):
         print(order)
         order.status = 'paid'
         payment = Payment.objects.create()
+        payment.status = 'advance paid'
         if order.cart:
             for orders in user.cart.orders.all():
                 payment.orders.add(orders)
@@ -171,8 +195,8 @@ def payment_with_id(request, payment_id):
     if request.method == 'POST':
         if payment_id:
             payment = Payment.objects.get(id=payment_id)
+            payment.status='advance paid'
             for order in payment.orders.all():
-                order.status = 'paid'
                 order.save()
         return redirect('home')
     if payment_id:
@@ -180,4 +204,3 @@ def payment_with_id(request, payment_id):
         print('dict')
         print(payment)
         return render(request, 'store/payment.html', {'payment': payment})
-    

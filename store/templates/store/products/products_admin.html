@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}
+Admin Dashboard: {{ product.name }}
+{% endblock %}
+{% block content %}
+<div class="container-fluid p-5">
+    <div class="row g-4">
+        <div class="col-12 col-md-3 text-center"  style="height: 75vh;">
+            <img src="{{ product.picture.url }}" class="p-5" style="width: 100%; height: auto;" alt="{{ product.name }}">
+            <h1><b>{{product.name}}</b></h1>
+            <p class="btn btn-success no-hover" ><b>ETB {{product.price}}</b></p>
+            <p><b>Posted by: {{product.posted_by}}</b></p>
+            <form method="post" action="{% url 'delete_product' product.id %}">
+                {% csrf_token %}
+                <button class="btn btn-danger"><i class="bi bi-x"></i> Delete Product</button>
+            </form>
+        </div>
+        
+        <div class="col-12 col-md-8">
+            <h2>Orders: 
+                <span class="btn btn-dark rounded-pill">{{product.order_count}}</span>
+            </h2>
+            <div class="row g-3">
+                {% for order in product.orders.all %}
+                <a href="{% url 'order_details' order.id %}" style="text-decoration: none;">
+                    <div class="form-control g-4" onmouseover="this.style.border='2px solid orange'" onmouseout="this.style.border='1px solid #ccc'">
+                        <p><b>Ordered by:</b> {{order.user.first_name}} {{order.user.last_name}}</p>
+                        <p><b>Ordered on:</b> {{order.created_at}}</p>
+                        <p><b>Payment status:</b> {{order.payment.status}}</p>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

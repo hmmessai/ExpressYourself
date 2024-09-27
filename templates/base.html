@@ -213,8 +213,8 @@
             
             <div class="d-none d-md-flex flex-grow-1 justify-content-md-center justify-content-lg-end" >
                 <form class="d-flex w-md-75 w-lg-100" role="search">
-                    <input class="form-control w-100 me-2 p-1 rounded-pill" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn px-3 custom-btn" type="submit"><i class="bi bi-search"></i></button>
+                    <input class="form-control w-100 me-2 px-4 p-1 rounded-pill" type="search" placeholder="Search" aria-label="Search">
+                    <button class="btn px-3 custom-btn rounded-pill" type="submit" onclick="javascript(void())"><i class="bi bi-search"></i></button>
                 </form>
             </div>
           
@@ -248,7 +248,7 @@
                                 <span class="btn-text" style="font-size: large;">My Profile</span>
                             </a>
                         {% endif %}
-                        {% if request.path != viewcart %}
+                        {% if request.path != viewcart and not user.is_staff %}
                             <a class="btn custom-btn mx-2 btn-icon" href="{% url 'view_cart' %}"><i class="bi bi-cart"></i>
                                 <span class="btn-text" style="font-size: large;">My Cart</span>
                             </a>

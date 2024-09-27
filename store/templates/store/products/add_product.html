@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}
+Add Products
+{% endblock %}
+{% block content %}
+<div class="container p-5">
+    <h1 class="text-center pb-4"><b>Add Product</b></h1>
+    <div class="p-5 w-100 form-control" style="height: 65vh;">
+        <form method="post" action="{% url 'add_product' %}">
+            <div class="row p-3 justify-content-center">
+                <label class="col-4" for="">Name</label>
+                <input class="col-7" type="text">
+            </div>
+            <div class="row p-3 justify-content-center">
+                <label class="col-4" for="">Colors</label>
+                <select class="col-7" name="color" id="color" multiple>
+                    {% for color in colors %}
+                        <option value="{{color.id}}">{{color.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="row p-3 justify-content-center">
+                <label class="col-4" for="">Sizes</label>
+                <select class="col-7" name="size" id="size" multiple>
+                    {% for size in sizes %}
+                        <option value="{{size.id}}">{{size.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="text-center pt-5">
+                <button class="btn btn-dark px-4"><b>Add</b></button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

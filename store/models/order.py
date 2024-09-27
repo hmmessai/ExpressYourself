@@ -102,10 +102,7 @@ class OrderForm(forms.ModelForm):
         elif self.instance and self.instance.product_id:
             self.fields['color'].queryset = self.instance.product.available_colors.all()
             self.fields['size'].queryset = self.instance.product.size.all()
-
-
-
-        
+  
 
     def __str__(self) -> str:
         return f"Payment for {self.order}"
@@ -115,10 +112,11 @@ class OrderForm(forms.ModelForm):
 def update_order_count(sender, instance, **kwargs):
     if instance.pk:
         product = instance.product
-        if instance.done:
-            product.order_count -=1
-        else:
-            product.order_count += 1
+        if instance.payment and instance.status == 'paid':
+            if instance.done:
+                product.order_count -=1
+            else:
+                product.order_count += 1
         product.save()
 
 @receiver(pre_delete, sender=Order)

@@ -37,3 +37,9 @@ body {
     border: black 2px solid;
     border-radius: 5px;
 }
+
+.no-hover:hover {
+    background-color: inherit !important; /* Keep the same background color */
+    color: inherit !important;           /* Keep the same text color */
+    box-shadow: none !important;         /* Remove any shadow */
+}

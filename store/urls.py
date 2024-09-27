@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import views, order_views, catagory_views
+from .views import views, order_views, catagory_views, product_views
 
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
@@ -17,4 +17,9 @@ urlpatterns = [
     path('make-payment/<int:order_id>/', order_views.make_payment, name='make_payment'),
     path('payment/order/<int:order_id>/', order_views.payment, name='payment_with_order'),
     path('payment/payment/<int:payment_id>/', order_views.payment_with_id, name='payment_with_id'),
+
+    path('product/<int:product_id>/', product_views.product, name='product'),
+    path('product/add/', product_views.add_product, name='add_product'),
+    path('product/delete/<int:product_id>', product_views.delete_product, name='delete_product'),
+    path('product/order/<int:order_id>', product_views.order_details, name='order_details'),
 ]
