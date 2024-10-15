@@ -79,7 +79,7 @@ Order
                         <a href="{% url 'order' p.id %}" style="text-decoration: none;">
                             <div class="card" style="position: relative;">
                                 <div style="display: block; z-index: 100; position: absolute; top: 8px; right: 8px;">
-                                    <span class="btn btn-warning rounded-pill">ETB {{product.price}}</span>
+                                    <span class="btn btn-warning rounded-pill">ETB {{p.price}}</span>
                                 </div>
                                 <img src="{{ p.picture.url }}" class="card-img-top" style="width: 100%; height: auto;" alt="{{ p.name }}">
                                 <hr class="card-hr">

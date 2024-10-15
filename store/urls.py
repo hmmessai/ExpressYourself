@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import views, order_views, catagory_views, product_views
+from .views import views, order_views, catagory_views, product_views, payment
 
 urlpatterns = [
     path('', views.Index.as_view(), name='index'),
@@ -14,12 +14,14 @@ urlpatterns = [
     path('filter_by_rating/', catagory_views.filter_product_by_rating, name='filter_product_by_category'),
     path('my_orders/', order_views.my_orders, name='my_orders'),
     path('order-details/', order_views.order_details, name='order-details'),
-    path('make-payment/<int:order_id>/', order_views.make_payment, name='make_payment'),
-    path('payment/order/<int:order_id>/', order_views.payment, name='payment_with_order'),
-    path('payment/payment/<int:payment_id>/', order_views.payment_with_id, name='payment_with_id'),
+    path('make-payment/<str:order_id>/', order_views.make_payment, name='make_payment'),
+    path('payment/order/<str:order_id>/', order_views.payment, name='payment_with_order'),
+    path('payment/payment/<str:payment_id>/', order_views.payment_with_id, name='payment_with_id'),
 
     path('product/<int:product_id>/', product_views.product, name='product'),
     path('product/add/', product_views.add_product, name='add_product'),
-    path('product/delete/<int:product_id>', product_views.delete_product, name='delete_product'),
-    path('product/order/<int:order_id>', product_views.order_details, name='order_details'),
+    path('product/delete/<str:product_id>', product_views.delete_product, name='delete_product'),
+    path('product/order/<str:order_id>', product_views.order_details, name='order_details'),
+
+    path('process_payment/', payment.process, name='process_payment'),
 ]

@@ -7,6 +7,7 @@ from users.models import CustomUser
 from .product import Product, Color, Size
 from django import forms
 from datetime import datetime
+import uuid
 from utilities.qr import generate_qr_code
 
 
@@ -19,11 +20,13 @@ class Cart(models.Model):
     
 
 class Payment(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     advance = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     status = models.CharField(max_length=20, null=False, default='not done')
     total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     delivery_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     product_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
 
     def save(self, *args, **kwargs):
         if self.orders and self.id:
@@ -52,6 +55,7 @@ class Payment(models.Model):
         pass
 
 class Order(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=False, related_name='orders')
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=False, related_name='orders')
     color = models.ForeignKey(Color, null=True, on_delete=models.SET_NULL)
@@ -59,9 +63,8 @@ class Order(models.Model):
     total_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
     done = models.BooleanField(null=False, default=False)
     payment = models.ForeignKey(Payment, on_delete=models.CASCADE, null=True, related_name='orders')
-    qr_code = models.ImageField(upload_to='qr_codes/', blank=True, null=True)
     cart = models.ForeignKey(Cart, limit_choices_to={'user': user}, null=True, blank=True, related_name='orders', on_delete=models.CASCADE)
-    status = models.CharField(max_length=20, default='unpaid', null=False)
+    status = models.CharField(max_length=20, default='request sent', null=False)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     delivered_at = models.DateTimeField(null=True)
 
@@ -72,10 +75,6 @@ class Order(models.Model):
         if self.product_id:
             price = Decimal(self.product.price) + (Decimal(0.02) * Decimal(str(self.product.price)))
             self.total_price = price
-        
-        buffer = generate_qr_code(self.__dict__)
-
-        self.qr_code.save(f'{self}_qr.png', File(buffer), save=False)
 
         super(Order, self).save(*args, **kwargs)
         
@@ -112,7 +111,7 @@ class OrderForm(forms.ModelForm):
 def update_order_count(sender, instance, **kwargs):
     if instance.pk:
         product = instance.product
-        if instance.payment and instance.status == 'paid':
+        if instance.payment:
             if instance.done:
                 product.order_count -=1
             else:

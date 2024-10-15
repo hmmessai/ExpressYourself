@@ -8,6 +8,9 @@ from ..models.product import Product
 def filter_product_by_category(request, category_id):
     product_list = []
 
+    # If the category is set to all it sends 0 as the category id
+    # so we will return all the products without considering thier 
+    # category.
     if category_id == 0:
         products = Product.objects.all()
         for product in products:
@@ -20,20 +23,20 @@ def filter_product_by_category(request, category_id):
                     'price': int(product.price),
                 }
                 product_list.append(data)
+    # if the category is set we will filter products based on their category
     else:
         category = Category.objects.get(id=category_id)
-        products = Product.objects.all()
+        products = Product.objects.filter(category=category, status='available')
 
         for product in products:
-            if product.category == category and product.status == 'available':
-                data = {
-                    'name': product.name,
-                    'id': product.id,
-                    'description': product.description,
-                    'picture': product.picture.url,
-                    'price': int(product.price),
-                }
-                product_list.append(data)
+            data = {
+                'name': product.name,
+                'id': product.id,
+                'description': product.description,
+                'picture': product.picture.url,
+                'price': int(product.price),
+            }
+            product_list.append(data)
 
     print(product_list)
 

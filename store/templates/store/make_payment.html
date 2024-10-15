@@ -3,8 +3,25 @@
 Order Verification
 {% endblock %}
 {% block content %}
-<div class="container text-center p-5">
-    <p >Give your phone to our representative to scan the code.</p>
-    <img src="{{code}}" alt="Verification QR Code" height="50%" width="50%">
+<div class="container p-5">
+    <h1 class="p-3 text-center pb-4">Order Details</h1>
+    <div class="mx-auto pt-4">
+        <div class="row">
+            <p class="fs-6 fs-sm-1 col-12 col-md-6"><b class="fs-5">Order ID: </b> <br> {{order.id}}</p>
+            <p class="fs-6 col-12 col-md-6"><b class="fs-5">Order Status: </b> <br>{{order.status}}</p>
+        </div>
+        <div class="row">
+            <p class="fs-6 col-12 col-md-6"><b class="fs-5">Payment Status: </b> <br>{{order.payment.status}}</p>
+            <p class="fs-6 col-12 col-md-6"><b class="fs-5">Ordered Product: </b> <br> {{order.product.name}}</p>
+        </div>
+        <div class="row">
+            <p class="fs-6 col-12 col-md-6"><b class="fs-5">Product Price:</b> <br>{{order.product.price}}</p>
+            <p class="fs-6 col-12 col-md-6"><b class="fs-5">Advance Payment done on:</b>  <br>{{order.payment.created_at}}</p>
+        </div>
+        <div class="row">
+            <p class="fs-6 col-12 col-md-6"><b class="fs-5">Total Price(including delivery): </b> <br>{{order.payment.total_price}}</p>
+            <p class="fs-6 col-12 col-md-6"><b class="fs-5">Paid Amount:</b> <br>{{order.payment.advance}}</p>
+        </div>
+    </div>
 </div>
 {% endblock %}

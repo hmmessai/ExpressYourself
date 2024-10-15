@@ -8,7 +8,7 @@ Express Yourself
     <div class="container-fluid">
         <div class="row px-5 w-75">
             <div class="col-12 px-5">
-                <div class="d-flex justify-content-between align-items-start g-5 overflow-auto hide-scrollbar flex-nowrap" id="categories">
+                <div class="d-flex justify-content-between align-items-start gx-2 overflow-auto hide-scrollbar flex-nowrap" id="categories">
                     <a class="btn btn-light item me-2 btn-no-wrap rounded-pill" data-category_id="0" href="#"> All </a>
                     {% for category in categories %}
                         <a class="btn btn-light item me-2 btn-no-wrap rounded-pill" data-category_id="{{ category.id }}" href="#">{{ category.name }}</a>
@@ -129,9 +129,8 @@ $(document).ready(function() {
                             products.empty();
                             response.products.forEach(function(product) {
                                 const csrf_token = getCookie('csrftoken');
-                                const product_url = "{% url 'signup' %}";
                                 console.log('Success');
-                                console.log(product.description.replace(/\n/g, '<br>'));
+                                console.log(product.name);
                                 const productHtml = `
                                     <div class="col">
                                         <a href="/order/${product.id}" style="text-decoration: none;">

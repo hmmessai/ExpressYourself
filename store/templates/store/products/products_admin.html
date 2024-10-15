@@ -27,6 +27,7 @@ Admin Dashboard: {{ product.name }}
                         <p><b>Ordered by:</b> {{order.user.first_name}} {{order.user.last_name}}</p>
                         <p><b>Ordered on:</b> {{order.created_at}}</p>
                         <p><b>Payment status:</b> {{order.payment.status}}</p>
+                        <p><b>Advance status: </b> {{order.status}}</p>
                     </div>
                 </a>
                 {% endfor %}

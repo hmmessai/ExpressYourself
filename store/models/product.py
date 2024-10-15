@@ -40,7 +40,7 @@ class Product(models.Model):
     available_colors = models.ManyToManyField(Color, related_name='using_products')
     rating = models.IntegerField(choices=RATINGS, null=True)
     size = models.ManyToManyField(Size, blank=True)
-    picture = models.ImageField(upload_to='product_images/', default='product_images/istockphoto-1159447883-612x612.jpg', blank=True, null=True)
+    picture = models.ImageField(upload_to='product_images/', default='product_images/image15_5abf2efe-a0d2-4b34-b8fe-e3165c9f0f76.webp', blank=True, null=True)
     status = models.CharField(max_length=20, null=False, default='available')
     order_count = models.IntegerField(null=False, default=0)
     posted_by = models.ForeignKey(

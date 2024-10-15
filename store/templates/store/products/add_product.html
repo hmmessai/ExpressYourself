@@ -7,12 +7,26 @@ Add Products
     <h1 class="text-center pb-4"><b>Add Product</b></h1>
     <div class="p-5 w-100 form-control" style="height: 65vh;">
         <form method="post" action="{% url 'add_product' %}">
+            {% csrf_token %}
             <div class="row p-3 justify-content-center">
-                <label class="col-4" for="">Name</label>
-                <input class="col-7" type="text">
+                <label class="col-4" for="name">Name</label>
+                <input class="col-7" type="text" name="name" id="name">
             </div>
             <div class="row p-3 justify-content-center">
-                <label class="col-4" for="">Colors</label>
+                <label class="col-4" for="price">Price</label>
+                <input class="col-7" type="number" name="price" id="price">
+            </div>
+            <div class="row p-3 justify-content-center">
+                <label class="col-4" for="category">Category</label>
+                <select class="col-7" name="category" id="category">
+                    <option value="">---Select Category----</option>
+                    {% for c in category %}
+                        <option value="{{c.id}}">{{c.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="row p-3 justify-content-center">
+                <label class="col-4" for="color">Colors</label>
                 <select class="col-7" name="color" id="color" multiple>
                     {% for color in colors %}
                         <option value="{{color.id}}">{{color.name}}</option>
@@ -20,7 +34,7 @@ Add Products
                 </select>
             </div>
             <div class="row p-3 justify-content-center">
-                <label class="col-4" for="">Sizes</label>
+                <label class="col-4" for="size">Sizes</label>
                 <select class="col-7" name="size" id="size" multiple>
                     {% for size in sizes %}
                         <option value="{{size.id}}">{{size.name}}</option>

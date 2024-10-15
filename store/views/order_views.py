@@ -6,6 +6,7 @@ from django.contrib import messages
 from store.models.product import Product, Color, Size
 from store.models.order import Order, Cart, Payment
 from utilities.qr import generate_qr_code, decode_qr_code
+from utilities.payment_module import get_access_token, send_payment_request
 
 @login_required
 def order(request, product_id, cart=None):
@@ -32,6 +33,8 @@ def order(request, product_id, cart=None):
             return redirect('payment_with_order', order_id=order.id)
         except Exception as e:
              print(e)
+             order.delete()
+             payment.delete()
              return render(request, 'store/order.html', {'product': product, 'products': products, 'messages': ["Select color and size before ordering."]})
 
     return render(request, 'store/order.html', {'product': product, 'products': products})
@@ -148,24 +151,23 @@ def my_orders(request):
     """
     if request.user:
         user = request.user
-        orders = Order.objects.filter(user=user, cart=None, status='paid')
+        orders = Order.objects.filter(user=user, cart=None, payment__status='advance paid')
     return render(request, 'store/my_orders.html', {'orders': orders})
 
 @login_required
 def order_details(request):
     if request.method == 'POST':
+        print(request.order)
         generate_qr_code(request.order)
 
 
 @login_required
 def make_payment(request, order_id):
     if request.method == 'POST':
-        pass
+        return redirect('payment_with_order', order_id)
     order = Order.objects.get(id=order_id)
-
-    code = order.qr_code.url
    
-    return render(request, 'store/make_payment.html', {'code': code})
+    return render(request, 'store/make_payment.html', {'order': order})
 
 
 @login_required
@@ -175,9 +177,16 @@ def payment(request, order_id):
     user = request.user
     if request.method == 'POST':
         print(order)
-        order.status = 'paid'
+        order.status = 'in process'
         payment = Payment.objects.create()
-        payment.status = 'advance paid'
+         ###############################################################
+        # This is where the payment logic(checking if advance is paid)
+        # is to be written for the time being
+        # we just assume it is done
+        token = get_access_token()
+        send_payment_request(token, payment.advance)
+        payment.status='advance paid'
+        ################################################################
         if order.cart:
             for orders in user.cart.orders.all():
                 payment.orders.add(orders)
@@ -195,9 +204,18 @@ def payment_with_id(request, payment_id):
     if request.method == 'POST':
         if payment_id:
             payment = Payment.objects.get(id=payment_id)
-            payment.status='advance paid'
             for order in payment.orders.all():
-                order.save()
+                order.status = 'paid'
+            ###############################################################
+            # This is where the payment logic(checking if advance is paid)
+            # is to be written for the time being
+            # we just assume it is done
+            token = get_access_token()
+            amount = int(payment.advance)
+            send_payment_request(token, amount)
+            payment.status='advance paid'
+            ################################################################
+            payment.save()
         return redirect('home')
     if payment_id:
         payment = Payment.objects.get(id=payment_id)
